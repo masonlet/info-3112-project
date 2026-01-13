@@ -14,10 +14,10 @@ This repository contains all project code, documentation, and planning materials
 | Name                    | Role |
 | ----------------------- | ---- |
 | Unish Pandey            | TBD  |
-| Kyan Oberas             | TBD  | 
-| Mason L'Etoile          | TBD  | 
-| Joseph Jaikaran         | TBD  | 
-| Ahmed Elmardi O Ibrahim | TBD  | 
+| Kyan Oberas             | TBD  |
+| Mason L'Etoile          | TBD  |
+| Joseph Jaikaran         | TBD  |
+| Ahmed Elmardi O Ibrahim | TBD  |
 
 ## Timeline & Evaluation Breakdown
 
@@ -40,5 +40,9 @@ This repository contains all project code, documentation, and planning materials
 
 ## Repo Structure
 ```bash
-README.md
+├── README.md
+└── docs/
+    └── vision-document/
+
+# Additional folders will be added as project progresses and they are needed
 ```
