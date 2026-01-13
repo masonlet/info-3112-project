@@ -1,6 +1,6 @@
 # INFO 3112 Group Project
 
-Group Project Repository
+A repository for the INFO-3112 group project.
 
 - Project Name: TBD
 - Methodology: Scrum / Agile
@@ -21,22 +21,22 @@ This repository contains all project code, documentation, and planning materials
 
 ## Timeline & Evaluation Breakdown
 
-| Week(s)    | Deliverable               | Weight |
-| ---------- | ------------------------- | ------ |
-| Week 1     | Introduction/Instructions | N/A    |
-| Week 2-4   | Requirements Gathering    | 5%     |
-| Week 2-4   | Vision Document           | 20%    |
-| Week 5     | Updated Vision Document   | 5%     |
-| Week 6     | Relative Estimating       | 5%     |
-| Week 6     | Project Kickoff           | N/A    |
-| Week 7     | Project Planning          | N/A    |
-| Week 8-9   | Sprint 1 - Sprint Plan    | 5%     |
-| Week 8-9   | Sprint 1 - Retrospective  | 5%     |
-| Week 10-11 | Sprint 2 - Sprint Plan    | 5%     |
-| Week 10-11 | Sprint 2 - Retrospective  | 5%     |
-| Week 12-13 | Sprint 3 - Sprint Plan    | 5%     |
-| Week 12-13 | Sprint 3 - Retrospective  | 5%     |
-| Week 14    | Final Product Demo        | 35%    |
+| Status      | Week(s)    | Deliverable               | Weight |
+| ----------- | ---------- | ------------------------- | ------ |
+| Complete    | Week 1     | Introduction/Instructions | N/A    |
+| In Progress | Week 2-4   | Requirements Gathering    | 5%     |
+| In Progress | Week 2-4   | Vision Document           | 20%    |
+| Planned     | Week 5     | Updated Vision Document   | 5%     |
+| Planned     | Week 6     | Relative Estimating       | 5%     |
+| Planned     | Week 6     | Project Kickoff           | N/A    |
+| Planned     | Week 7     | Project Planning          | N/A    |
+| Planned     | Week 8-9   | Sprint 1 - Sprint Plan    | 5%     |
+| Planned     | Week 8-9   | Sprint 1 - Retrospective  | 5%     |
+| Planned     | Week 10-11 | Sprint 2 - Sprint Plan    | 5%     |
+| Planned     | Week 10-11 | Sprint 2 - Retrospective  | 5%     |
+| Planned     | Week 12-13 | Sprint 3 - Sprint Plan    | 5%     |
+| Planned     | Week 12-13 | Sprint 3 - Retrospective  | 5%     |
+| Planned     | Week 14    | Final Product Demo        | 35%    |
 
 ## Repo Structure
 ```bash
