@@ -2,14 +2,14 @@
 
 A repository for the INFO-3112 group project.
 
-- Project Name: TBD
+- Project Name: Code Cupid
 - Methodology: Scrum / Agile
 
 ## Project Overview
 
-This repository contains all project code, documentation, and planning materials for the INFO-3112 group project. Our group will be developing a dating website or application over 14 weeks using Scrum.
+This repository contains all project code, documentation, and planning materials for Code Cupid. Our group will be developing an IT dating website over 14 weeks using Scrum.
   
-## Team Members
+## Code Cupid Coders
 
 | Name                    | Role |
 | ----------------------- | ---- |
