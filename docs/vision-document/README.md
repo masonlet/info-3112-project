@@ -1,6 +1,6 @@
-# Vision Document - ? (Project Name)
+# Vision Document - Code Cupid
 
-**Status:** Initial files
+**Status:** Begin drafting
 
 This document will evolve through Weeks 2-5:
 - Week 2: Begin drafting
