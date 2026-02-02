@@ -1,6 +1,6 @@
 # Vision Document - Code Cupid
 
-**Status:** Begin drafting
+**Status:** Submitted document without estimates/costing
 
 This document will evolve through Weeks 2-5:
 - Week 2: Begin drafting
