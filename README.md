@@ -100,3 +100,6 @@ npm run lint  # ESLint check
 npm run build # Production Next.js build
 npm start     # Serve production build at http://localhost:3000
 ```
+
+## License
+MIT License - see [LICENSE](./LICENSE) for details.
