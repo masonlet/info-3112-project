@@ -1,4 +1,4 @@
-# INFO 3112 Group Project - LookingForLove
+# INFO 3112 Group Project - CodeCupid
 
 [![CI](https://github.com/masonlet/info-3112-project/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/masonlet/info-3112-project/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org)
@@ -8,14 +8,14 @@
 
 A repository for the INFO-3112 group project.
 
-- Project Name: LookingForLove
+- Project Name: CodeCupid
 - Methodology: Scrum / Agile
 
 ## Project Overview
 
-This repository contains all project code, documentation, and planning materials for LookingForLove. Our group will be developing an IT dating website over 8 weeks using Scrum.
-  
-## LookingForLove Coders
+This application is a dating platform specifically designed for IT professionals who are looking for meaningful connections with like-minded people. Unlike traditional dating applications, it combines personal interests with professional and technical profiles to create smarter, more relevant matches.
+
+## CodeCupid Coders
 
 | Name                    | Role |
 | ----------------------- | ---- |
