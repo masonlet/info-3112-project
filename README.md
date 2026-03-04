@@ -25,6 +25,10 @@ This repository contains all project code, documentation, and planning materials
 | Joseph Jaikaran         | Developer |
 | Ahmed Elmardi O Ibrahim | Developer |
 
+## Website
+
+- [info-3112-project](https://info-3112-project.vercel.app)
+
 ## Tech Stack
 
 <p align="left">
@@ -41,11 +45,6 @@ This repository contains all project code, documentation, and planning materials
 
 | Status      | Week(s)    | Deliverable               | Weight |
 | ----------- | ---------- | ------------------------- | ------ |
-| Complete    | Week 1     | Introduction/Instructions | N/A    |
-| Complete    | Week 2-4   | Requirements Gathering    | 5%     |
-| Complete    | Week 2-4   | Vision Document           | 20%    |
-| Complete    | Week 5     | Updated Vision Document   | 5%     |
-| Complete    | Week 6     | Relative Estimating       | 5%     |
 | Complete    | Week 6     | Project Kickoff           | N/A    |
 | Complete    | Week 7     | Project Planning          | N/A    |
 | In Progress | Week 8-9   | Sprint 1 - Sprint Plan    | 5%     |
