@@ -8,8 +8,9 @@
 ## Quality Standards
 Before submitting a PR, please ensure:
 1. Your code passes linting: `npm run lint`
-2. All tests pass: `npm run test`
-3. The project build successfully: `npm run build`
+2. TypeScript types pass: `npm run typecheck`
+3. All tests pass: `npm run test`
+4. The project builds successfully: `npm run build`
 
 ## Automated Checks
 Our CI pipeline (GitHub Actions) will automatically run these checks on every PR.
