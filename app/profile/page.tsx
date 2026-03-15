@@ -6,8 +6,22 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+type ProfileFormData = {
+  salutation: string;
+  firstName: string;
+  lastName: string;
+  nickname: string;
+  dateOfBirth: string;
+  gender: string;
+  email: string;
+  preferredContactMethod: string;
+  contactIdentifier: string;
+  memberType: string;
+  photoUrl: string;
+};
+
 export default function ProfilePage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProfileFormData>({
     salutation: "",
     firstName: "",
     lastName: "",
@@ -22,6 +36,7 @@ export default function ProfilePage() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submittedProfile, setSubmittedProfile] = useState<ProfileFormData | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -43,15 +58,9 @@ export default function ProfilePage() {
     const newErrors: Record<string, string> = {};
 
     if (!formData.salutation) newErrors.salutation = "Salutation is required.";
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required.";
-    }
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required.";
-    }
-    if (!formData.dateOfBirth) {
-      newErrors.dateOfBirth = "Date of birth is required.";
-    }
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required.";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required.";
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = "Date of birth is required.";
     if (!formData.gender) newErrors.gender = "Gender is required.";
 
     if (!formData.email.trim()) {
@@ -61,8 +70,7 @@ export default function ProfilePage() {
     }
 
     if (!formData.preferredContactMethod) {
-      newErrors.preferredContactMethod =
-        "Preferred contact method is required.";
+      newErrors.preferredContactMethod = "Preferred contact method is required.";
     }
 
     if (!formData.contactIdentifier.trim()) {
@@ -86,17 +94,84 @@ export default function ProfilePage() {
       return;
     }
 
+    setSubmittedProfile(formData);
     console.log("Profile form submitted:", formData);
   };
+
+  const handleEditProfile = () => {
+    setSubmittedProfile(null);
+  };
+
+  if (submittedProfile) {
+    return (
+      <main className="min-h-screen bg-muted/30 py-10 px-4">
+        <div className="max-w-2xl mx-auto">
+          <Card className="shadow-lg border">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">Profile Summary</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Review the information you entered for your profile.
+              </p>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              <section className="space-y-3">
+                <h2 className="text-lg font-semibold">Personal Information</h2>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <SummaryItem label="Salutation" value={submittedProfile.salutation} />
+                  <SummaryItem label="First Name" value={submittedProfile.firstName} />
+                  <SummaryItem label="Last Name" value={submittedProfile.lastName} />
+                  <SummaryItem
+                    label="Nickname"
+                    value={submittedProfile.nickname || "Not provided"}
+                  />
+                  <SummaryItem label="Date of Birth" value={submittedProfile.dateOfBirth} />
+                  <SummaryItem label="Gender" value={submittedProfile.gender} />
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-lg font-semibold">Contact Information</h2>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <SummaryItem label="Email" value={submittedProfile.email} />
+                  <SummaryItem
+                    label="Preferred Contact Method"
+                    value={submittedProfile.preferredContactMethod}
+                  />
+                  <SummaryItem
+                    label="Contact Identifier"
+                    value={submittedProfile.contactIdentifier}
+                  />
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-lg font-semibold">Membership Details</h2>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <SummaryItem label="Member Type" value={submittedProfile.memberType} />
+                  <SummaryItem
+                    label="Photo URL"
+                    value={submittedProfile.photoUrl || "Not provided"}
+                  />
+                </div>
+              </section>
+
+              <Button onClick={handleEditProfile} className="w-full">
+                Edit Profile
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-muted/30 py-10 px-4">
       <div className="max-w-2xl mx-auto">
         <Card className="shadow-lg border">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">
-              Create Your Profile
-            </CardTitle>
+            <CardTitle className="text-2xl font-bold">Create Your Profile</CardTitle>
             <p className="text-sm text-muted-foreground">
               Enter your personal and contact information to build your member
               profile.
@@ -124,9 +199,7 @@ export default function ProfilePage() {
                     <option value="Dr.">Dr.</option>
                   </select>
                   {errors.salutation && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.salutation}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.salutation}</p>
                   )}
                 </div>
 
@@ -140,9 +213,7 @@ export default function ProfilePage() {
                     onChange={handleChange}
                   />
                   {errors.firstName && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.firstName}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
                   )}
                 </div>
 
@@ -156,9 +227,7 @@ export default function ProfilePage() {
                     onChange={handleChange}
                   />
                   {errors.lastName && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.lastName}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
                   )}
                 </div>
 
@@ -184,9 +253,7 @@ export default function ProfilePage() {
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   />
                   {errors.dateOfBirth && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.dateOfBirth}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.dateOfBirth}</p>
                   )}
                 </div>
 
@@ -206,9 +273,7 @@ export default function ProfilePage() {
                     <option value="Prefer not to say">Prefer not to say</option>
                   </select>
                   {errors.gender && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.gender}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.gender}</p>
                   )}
                 </div>
               </section>
@@ -227,9 +292,7 @@ export default function ProfilePage() {
                     onChange={handleChange}
                   />
                   {errors.email && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.email}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.email}</p>
                   )}
                 </div>
 
@@ -251,7 +314,7 @@ export default function ProfilePage() {
                     <option value="LinkedIn">LinkedIn</option>
                   </select>
                   {errors.preferredContactMethod && (
-                    <p className="text-sm text-red-500 mt-1">
+                    <p className="mt-1 text-sm text-red-500">
                       {errors.preferredContactMethod}
                     </p>
                   )}
@@ -267,7 +330,7 @@ export default function ProfilePage() {
                     onChange={handleChange}
                   />
                   {errors.contactIdentifier && (
-                    <p className="text-sm text-red-500 mt-1">
+                    <p className="mt-1 text-sm text-red-500">
                       {errors.contactIdentifier}
                     </p>
                   )}
@@ -291,9 +354,7 @@ export default function ProfilePage() {
                     <option value="Paid">Paid</option>
                   </select>
                   {errors.memberType && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.memberType}
-                    </p>
+                    <p className="mt-1 text-sm text-red-500">{errors.memberType}</p>
                   )}
                 </div>
 
@@ -309,7 +370,7 @@ export default function ProfilePage() {
                 </div>
               </section>
 
-              <Button type="submit" className="w-full mt-2">
+              <Button type="submit" className="mt-2 w-full">
                 Save Profile
               </Button>
             </form>
@@ -317,5 +378,14 @@ export default function ProfilePage() {
         </Card>
       </div>
     </main>
+  );
+}
+
+function SummaryItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border bg-background p-3">
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
+      <p className="mt-1 text-sm">{value}</p>
+    </div>
   );
 }
