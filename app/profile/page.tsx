@@ -20,18 +20,60 @@ export default function ProfilePage() {
     photoUrl: "",
   });
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.salutation) newErrors.salutation = "Salutation is required.";
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required.";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required.";
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = "Date of birth is required.";
+    if (!formData.gender) newErrors.gender = "Gender is required.";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required.";
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = "Enter a valid email address.";
+    }
+    if (!formData.preferredContactMethod) {
+      newErrors.preferredContactMethod = "Preferred contact method is required.";
+    }
+    if (!formData.contactIdentifier.trim()) {
+      newErrors.contactIdentifier = "Contact identifier is required.";
+    }
+    if (!formData.memberType) {
+      newErrors.memberType = "Member type is required.";
+    }
+
+    return newErrors;
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
     console.log("Profile form submitted:", formData);
   };
 
@@ -55,6 +97,7 @@ export default function ProfilePage() {
             <option value="Mrs.">Mrs.</option>
             <option value="Dr.">Dr.</option>
           </select>
+          {errors.salutation && <p className="text-sm text-red-500 mt-1">{errors.salutation}</p>}
         </div>
 
         <div>
@@ -66,6 +109,7 @@ export default function ProfilePage() {
             value={formData.firstName}
             onChange={handleChange}
           />
+          {errors.firstName && <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>}
         </div>
 
         <div>
@@ -77,6 +121,7 @@ export default function ProfilePage() {
             value={formData.lastName}
             onChange={handleChange}
           />
+          {errors.lastName && <p className="text-sm text-red-500 mt-1">{errors.lastName}</p>}
         </div>
 
         <div>
@@ -99,6 +144,7 @@ export default function ProfilePage() {
             value={formData.dateOfBirth}
             onChange={handleChange}
           />
+          {errors.dateOfBirth && <p className="text-sm text-red-500 mt-1">{errors.dateOfBirth}</p>}
         </div>
 
         <div>
@@ -116,6 +162,7 @@ export default function ProfilePage() {
             <option value="Non-Binary">Non-Binary</option>
             <option value="Prefer not to say">Prefer not to say</option>
           </select>
+          {errors.gender && <p className="text-sm text-red-500 mt-1">{errors.gender}</p>}
         </div>
 
         <div>
@@ -128,6 +175,7 @@ export default function ProfilePage() {
             value={formData.email}
             onChange={handleChange}
           />
+          {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
         </div>
 
         <div>
@@ -145,6 +193,9 @@ export default function ProfilePage() {
             <option value="Discord">Discord</option>
             <option value="LinkedIn">LinkedIn</option>
           </select>
+          {errors.preferredContactMethod && (
+            <p className="text-sm text-red-500 mt-1">{errors.preferredContactMethod}</p>
+          )}
         </div>
 
         <div>
@@ -156,6 +207,9 @@ export default function ProfilePage() {
             value={formData.contactIdentifier}
             onChange={handleChange}
           />
+          {errors.contactIdentifier && (
+            <p className="text-sm text-red-500 mt-1">{errors.contactIdentifier}</p>
+          )}
         </div>
 
         <div>
@@ -171,6 +225,7 @@ export default function ProfilePage() {
             <option value="Free">Free</option>
             <option value="Paid">Paid</option>
           </select>
+          {errors.memberType && <p className="text-sm text-red-500 mt-1">{errors.memberType}</p>}
         </div>
 
         <div>
