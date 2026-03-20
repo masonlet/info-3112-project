@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useFormFields } from "@/lib/hooks/useFormFields";
+import { validateEmail, validatePassword } from "@/lib/auth-validation";
+import { getFriendlyError } from "@/lib/auth-errors";
 
 type RegisterFormData = {
   email: string;
@@ -19,13 +22,16 @@ function RegisterForm() {
   const searchParams = useSearchParams();
   const supabase = createClient();
 
-  const [formData, setFormData] = useState<RegisterFormData>({
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const { 
+    formData, setFormData, 
+    errors, setErrors,
+    handleChange 
+  } = useFormFields<RegisterFormData>({
+    email: "", 
+    password: "", 
+    confirmPassword: ""
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -34,26 +40,15 @@ function RegisterForm() {
     if (message) setErrors({ form: message });
   }, [searchParams]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
-
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.email.trim()) newErrors.email = "Email is required.";
-    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = "Enter a valid email.";
+    const emailErr = validateEmail(formData.email);
+    if (emailErr) newErrors.email = emailErr;
 
-    if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters.";
-    else if (
-      !/[A-Z]/.test(formData.password) || 
-      !/[a-z]/.test(formData.password) || 
-      !/\d/.test(formData.password)
-    ) newErrors.password = "Password needs uppercase, lowercase, and a number.";
-
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords don't match";
+    const passErr = validatePassword(formData.password);
+    if (passErr) newErrors.password = passErr;    
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords don't match.";
 
     return newErrors;
   };
@@ -65,9 +60,11 @@ function RegisterForm() {
     if (Object.keys(validationErrors).length > 0) return;
 
     setLoading(true);
-    const normalizedEmail = formData.email.toLowerCase().trim();
-    const { error } = await supabase.auth.signUp({ email: normalizedEmail, password: formData.password });
-    if (error) setErrors({ form: error.message });
+    const { error } = await supabase.auth.signUp({ 
+      email: formData.email.toLowerCase().trim(), 
+      password: formData.password 
+    });
+    if (error) setErrors({ form: getFriendlyError(error.message) });
     else {
       setFormData({ email: "", password: "", confirmPassword: "" });
       setSuccess(true);
@@ -162,7 +159,9 @@ function RegisterForm() {
             </section>
 
             {errors.form && (
-              <p role="alert" className="mt-1 text-sm text-red-500">{errors.form}</p>
+              <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
+                <p className="text-sm text-red-600">{errors.form}</p>
+              </div>
             )}
 
             <Button type="submit" className="w-full mt-2" disabled={loading}>

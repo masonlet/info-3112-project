@@ -7,37 +7,55 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useFormFields } from "@/lib/hooks/useFormFields";
+import { validateEmail } from "@/lib/auth-validation";
+import { getFriendlyError } from "@/lib/auth-errors";
 
+type LoginFormData = {
+  email: string;
+  password: string;
+}
 export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [formError, setFormError] = useState("");
+
+  const { 
+    formData,
+    errors, setErrors,
+    handleChange 
+  } = useFormFields<LoginFormData>({
+    email: "",
+    password: "",
+  });
+
   const [loading, setLoading] = useState(false);
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    const emailErr = validateEmail(formData.email);
+    if (emailErr) newErrors.email = emailErr;
+    if (!formData.password) newErrors.password = "Password is required.";
+    return newErrors;
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError("");
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
+
     setLoading(true);
-
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      if (error.message.toLowerCase().includes("invalid login credentials")) {
-        setFormError("Incorrect email or password. Please try again.");
-      } else if (error.message.toLowerCase().includes("email not confirmed")) {
-        setFormError("Email not verified. Check your inbox, or sign up.");
-      } else {
-        setFormError("Something went wrong. Please try again later.");
-      }
-      setLoading(false);
-      return;
+    const { error } = await supabase.auth.signInWithPassword({ 
+      email: formData.email.toLowerCase().trim(), 
+      password: formData.password
+    });
+    if (error) setErrors({ form: getFriendlyError(error.message) });
+    else {
+      router.push("/");
+      router.refresh();
     }
-
-    router.push("/");
-    router.refresh();
-  }
+    setLoading(false);
+  };
 
   return (
     <main className="min-h-screen bg-muted/30 flex items-center justify-center px-4">
@@ -50,25 +68,43 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" 
-                     type="email"
-                     placeholder="you@example.com"
-                     value={email}
-                     onChange={(e) => setEmail(e.target.value)}
+              <Input 
+                id="email" 
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                aria-invalid={!!errors.email}
+                aria-describedby="email-error"
+                value={formData.email}
+                onChange={handleChange}
               />
+              {errors.email && (
+                <p id="email-error" role="alert" className="mt-1 text-sm text-red-500">
+                  {errors.email}
+                </p>
+              )}
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input id="password" 
-                     type="password" 
-                     placeholder="******" 
-                     value={password} 
-                     onChange={(e) => setPassword(e.target.value)}
+              <Input 
+                id="password" 
+                name="password"
+                type="password" 
+                placeholder="******" 
+                aria-invalid={!!errors.password}
+                aria-describedby="password-error"
+                value={formData.password} 
+                onChange={handleChange}
               />
+              {errors.password && (
+                <p id="password-error" role="alert" className="mt-1 text-sm text-red-500">
+                  {errors.password}
+                </p>
+              )}
             </div>
-            {formError && (
+            {errors.form && (
               <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
-              <p className="text-sm text-red-600">{formError}</p>
+                <p className="text-sm text-red-600">{errors.form}</p>
               </div>
             )}
             <Button type="submit" className="w-full mt-2" disabled={loading}>
