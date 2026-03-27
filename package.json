@@ -7,6 +7,7 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -32,6 +33,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.1.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
@@ -46,7 +48,9 @@
     "test": {
       "globals": true,
       "environment": "jsdom",
-      "include": ["tests/**/*.{test,spec}.{ts,tsx}"]
+      "include": [
+        "tests/**/*.{test,spec}.{ts,tsx}"
+      ]
     }
   }
 }
