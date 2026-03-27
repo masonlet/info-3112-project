@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useFormFields } from "@/hooks/useFormFields";
+import { validateEmail } from "@/lib/auth-validation";
 
 type ProfileFormData = {
   salutation: string;
@@ -21,7 +23,11 @@ type ProfileFormData = {
 };
 
 export default function ProfilePage() {
-  const [formData, setFormData] = useState<ProfileFormData>({
+  const {
+    formData,
+    errors, setErrors,
+    handleChange
+  } = useFormFields<ProfileFormData>({
     salutation: "",
     firstName: "",
     lastName: "",
@@ -35,24 +41,7 @@ export default function ProfilePage() {
     photoUrl: "",
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submittedProfile, setSubmittedProfile] = useState<ProfileFormData | null>(null);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
-  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -63,23 +52,17 @@ export default function ProfilePage() {
     if (!formData.dateOfBirth) newErrors.dateOfBirth = "Date of birth is required.";
     if (!formData.gender) newErrors.gender = "Gender is required.";
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required.";
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = "Enter a valid email address.";
-    }
+    const emailErr = validateEmail(formData.email);
+    if (emailErr) newErrors.email = emailErr;
 
-    if (!formData.preferredContactMethod) {
+    if (!formData.preferredContactMethod)
       newErrors.preferredContactMethod = "Preferred contact method is required.";
-    }
 
-    if (!formData.contactIdentifier.trim()) {
+    if (!formData.contactIdentifier.trim())
       newErrors.contactIdentifier = "Contact identifier is required.";
-    }
 
-    if (!formData.memberType) {
+    if (!formData.memberType)
       newErrors.memberType = "Member type is required.";
-    }
 
     return newErrors;
   };
@@ -90,9 +73,8 @@ export default function ProfilePage() {
     const validationErrors = validateForm();
     setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length > 0) {
+    if (Object.keys(validationErrors).length > 0)
       return;
-    }
 
     setSubmittedProfile(formData);
     console.log("Profile form submitted:", formData);
@@ -389,3 +371,4 @@ function SummaryItem({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
