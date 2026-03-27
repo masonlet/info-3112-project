@@ -38,7 +38,7 @@ function RegisterForm() {
   useEffect(() => {
     const message = searchParams.get("message");
     if (message) setErrors({ form: message });
-  }, [searchParams]);
+  }, [searchParams, setErrors]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
