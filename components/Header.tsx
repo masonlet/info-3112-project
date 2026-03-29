@@ -1,0 +1,65 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Menu, X, Heart } from "lucide-react";
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/profile", label: "Profile" },
+  { href: "/login", label: "Sign In" },
+  { href: "/register", label: "Sign Up" },
+];
+
+export default function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <>
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 sm:hidden"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
+      <header className="relative z-50 border-b bg-background px-4 py-3">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
+            <Heart className="w-5 h-5 text-rose-500" />
+            LookingForLove
+          </Link>
+
+          <nav className="hidden sm:flex items-center gap-2">
+            {navLinks.map(({ href, label }) => (
+              <Button key={href} variant="ghost" size="sm" asChild>
+                <Link href={href}>{label}</Link>
+              </Button>
+            ))}
+          </nav>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </Button>
+        </div>
+
+        {menuOpen && (
+          <nav className="absolute top-full left-0 right-0 z-50 sm:hidden border-t bg-background flex flex-col gap-1 px-4 py-3">
+            {navLinks.map(({ href, label }) => (
+              <Button key={href} variant="ghost" className="justify-start" asChild>
+                <Link href={href} onClick={() => setMenuOpen(false)}>{label}</Link>
+              </Button>
+            ))}
+          </nav>
+        )}
+      </header>
+    </>
+  );
+}

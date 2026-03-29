@@ -5,6 +5,7 @@ import "./globals.css";
 
 import { ThemeProvider } from "next-themes";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -36,6 +37,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Header/>
           <main className="flex flex-col flex-1">{children}</main>
           <Footer/>
         </ThemeProvider>
