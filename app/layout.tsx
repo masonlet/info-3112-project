@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
+
 import "./globals.css";
+
+import { ThemeProvider } from "next-themes";
+import Footer from "@/components/Footer";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -34,6 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <main className="flex flex-col flex-1">{children}</main>
+          <Footer/>
         </ThemeProvider>
       </body>
     </html>
