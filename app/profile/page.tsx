@@ -177,7 +177,7 @@ export default function ProfilePage() {
 
     if (loading) {
     return (
-      <main className="min-h-screen bg-muted/30 py-10 px-4">
+      <div className="min-h-screen bg-muted/30 py-10 px-4">
         <div className="max-w-2xl mx-auto">
           <Card className="shadow-lg border">
             <CardContent className="py-8">
@@ -185,7 +185,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </div>
-      </main>
+      </div>
     );
   }
 
