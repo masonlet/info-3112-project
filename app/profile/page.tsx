@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ type ProfileFormData = {
 
 export default function ProfilePage() {
   const {
-    formData,
+    formData, setFormData,
     errors, setErrors,
     handleChange
   } = useFormFields<ProfileFormData>({
@@ -41,7 +42,10 @@ export default function ProfilePage() {
     photoUrl: "",
   });
 
+  const supabase = createClient();
   const [submittedProfile, setSubmittedProfile] = useState<ProfileFormData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saveMessage, setSaveMessage] = useState("");
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -67,22 +71,123 @@ export default function ProfilePage() {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const loadProfile = async () => {
+    setLoading(true);
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      setLoading(false);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error(error);
+      setLoading(false);
+      return;
+    }
+
+    if (data) {
+      const loadedProfile: ProfileFormData = {
+        salutation: data.salutation ?? "",
+        firstName: data.first_name ?? "",
+        lastName: data.last_name ?? "",
+        nickname: data.nickname ?? "",
+        dateOfBirth: data.date_of_birth ?? "",
+        gender: data.gender ?? "",
+        email: data.email ?? "",
+        preferredContactMethod: data.preferred_contact_method ?? "",
+        contactIdentifier: data.contact_identifier ?? "",
+        memberType: data.member_type ?? "",
+        photoUrl: data.photo_url ?? "",
+      };
+
+      setFormData(loadedProfile);
+      setSubmittedProfile(loadedProfile);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+      loadProfile();
+    }, []);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const validationErrors = validateForm();
     setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length > 0)
-      return;
+    if (Object.keys(validationErrors).length > 0) return;
 
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      setSaveMessage("You must be logged in to save your profile.");
+      return;
+    }
+
+    const profilePayload = {
+      user_id: user.id,
+      salutation: formData.salutation,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      nickname: formData.nickname || null,
+      date_of_birth: formData.dateOfBirth,
+      gender: formData.gender,
+      email: formData.email,
+      preferred_contact_method: formData.preferredContactMethod,
+      contact_identifier: formData.contactIdentifier,
+      member_type: formData.memberType,
+      photo_url: formData.photoUrl || null,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from("profiles")
+      .upsert(profilePayload, { onConflict: "user_id" });
+
+    if (error) {
+      setSaveMessage("Failed to save profile.");
+      console.error(error);
+      return;
+    }
+
+    setSaveMessage("Profile saved successfully.");
     setSubmittedProfile(formData);
-    console.log("Profile form submitted:", formData);
   };
 
   const handleEditProfile = () => {
     setSubmittedProfile(null);
+    setSaveMessage("");
   };
+
+    if (loading) {
+    return (
+      <main className="min-h-screen bg-muted/30 py-10 px-4">
+        <div className="max-w-2xl mx-auto">
+          <Card className="shadow-lg border">
+            <CardContent className="py-8">
+              <p className="text-sm text-muted-foreground">Loading profile...</p>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    );
+  }
 
   if (submittedProfile) {
     return (
@@ -351,6 +456,10 @@ export default function ProfilePage() {
                   />
                 </div>
               </section>
+
+              {saveMessage && (
+                <p className="text-sm text-muted-foreground">{saveMessage}</p>
+              )}
 
               <Button type="submit" className="mt-2 w-full">
                 Save Profile
