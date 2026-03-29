@@ -191,7 +191,7 @@ export default function ProfilePage() {
 
   if (submittedProfile) {
     return (
-      <main className="min-h-screen bg-muted/30 py-10 px-4">
+      <div className="flex-1 py-10 px-4 bg-muted/30">
         <div className="max-w-2xl mx-auto">
           <Card className="shadow-lg border">
             <CardHeader>
@@ -249,12 +249,12 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-muted/30 py-10 px-4">
+    <div className="flex-1 px-4 py-10 bg-muted/30">
       <div className="max-w-2xl mx-auto">
         <Card className="shadow-lg border">
           <CardHeader>
@@ -468,7 +468,7 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </div>
-    </main>
+    </div>
   );
 }
 
