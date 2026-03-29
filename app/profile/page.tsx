@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,7 +71,7 @@ export default function ProfilePage() {
     return newErrors;
   };
 
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     setLoading(true);
 
     const {
@@ -116,11 +116,11 @@ export default function ProfilePage() {
     }
 
     setLoading(false);
-  };
+  }, [supabase, setFormData]);
 
   useEffect(() => {
       loadProfile();
-    }, []);
+    }, [loadProfile]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
