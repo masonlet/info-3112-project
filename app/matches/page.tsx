@@ -121,7 +121,7 @@ function calculateCompatibilityScore(
   if (candidate.photo_url) score += 5;
   if (candidate.nickname) score += 5;
 
-  return score; 
+  return score;
 }
 
 export default function MatchesPage() {
@@ -178,7 +178,7 @@ export default function MatchesPage() {
       setLoading(false);
       return;
     }
-
+    
     const scoredMatches: Match[] = (candidates ?? [])
       .map((candidate: Profile) => ({
         ...candidate,
@@ -333,17 +333,17 @@ function MatchCard({ match, currentUser }: { match: Match; currentUser: Profile 
               match.score >= 80
                 ? "default"
                 : match.score >= 60
-                ? "secondary"
-                : "outline"
+                  ? "secondary"
+                  : "outline"
             }
           >
             {match.score >= 80
               ? `Excellent Match · ${match.score}%`
               : match.score >= 60
-              ? `Good Match · ${match.score}%`
-              : match.score >= 40
-              ? `Potential Match · ${match.score}%`
-              : `Poor Match · ${match.score}%`}
+                ? `Good Match · ${match.score}%`
+                : match.score >= 40
+                  ? `Potential Match · ${match.score}%`
+                  : `Poor Match · ${match.score}%`}
           </Badge>
         </div>
 
