@@ -1,27 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
+import { useFormFields } from "@/hooks/useFormFields";
+import { validateEmail } from "@/lib/auth-validation";
+import { getFriendlyError } from "@/lib/auth-errors";
+
+const supabase = createClient();
 
 export default function Settings() {
-  const supabase = createClient();
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+  const [signOutLoading, setSignOutLoading] = useState(false);
 
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const {
+    formData, setFormData,
+    errors, setErrors,
+    handleChange
+  } = useFormFields({ email: "" });
+
+  const [currentEmail, setCurrentEmail] = useState<string | null>(null);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [emailSuccess, setEmailSuccess] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setCurrentEmail(user?.email ?? null);
+    });
+  }, []);
 
   const handleSignOut = async () => {
-    setLoading(true);
+    setSignOutLoading(true);
     try {
       await supabase.auth.signOut();
       window.location.href = "/login";
     } catch {
-      setError("Failed to sign out. Please try again.");
-      setLoading(false);
+      setSignOutError("Failed to sign out. Please try again.");
+      setSignOutLoading(false);
     }
+  };
+
+  const handleEmailChange = async () => {
+    setEmailSuccess(false);
+    const emailErr = validateEmail(formData.email);
+    if (emailErr) return setErrors({ email: emailErr });
+
+    setEmailLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ email: formData.email.toLowerCase().trim() });
+      if (error) setErrors({ email: getFriendlyError(error.message) });
+      else {
+        setEmailSuccess(true);
+        setFormData({ email: "" });
+      }
+    } catch {
+      setErrors({ email: "Something went wrong. Please try again." });
+    }
+    setEmailLoading(false);
+  };
+
+  const handleEmailFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailSuccess(false);
+    handleChange(e);
   };
 
   return (
@@ -38,10 +81,40 @@ export default function Settings() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
+              {currentEmail && (
+                <Label className="mb-2 block">Current email: <span className="font-normal">{currentEmail}</span></Label>
+              )}
               <Label htmlFor="email">New Email</Label>
-              <Input id="email" name="email" placeholder="new@example.com"/>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="new@example.com"
+                value={formData.email}
+                onChange={handleEmailFieldChange}
+                onBlur={() => {
+                  const emailErr = validateEmail(formData.email);
+                  if (emailErr) setErrors({ email: emailErr });
+                }}
+                aria-invalid={!!errors.email}
+                aria-describedby="email-error"
+              />
+              {errors.email && (
+                <p id="email-error" role="alert" className="mt-1 text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
-            <Button className="w-full">Update Email</Button>
+            {emailSuccess && (
+              <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3">
+                <p className="text-sm text-green-600">Check both your old and new email to confirm the change.</p>
+              </div>
+            )}
+            <Button
+              className="w-full"
+              onClick={handleEmailChange}
+              disabled={emailLoading || !formData.email || formData.email === currentEmail}
+            >
+              {emailLoading ? "Updating..." : "Update Email"}
+            </Button>
           </CardContent>
         </Card>
 
@@ -66,18 +139,18 @@ export default function Settings() {
             <CardTitle className="text-lg font-semibold text-red-600">Danger Zone</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {error && (
+            {signOutError && (
               <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3">
-                <p className="text-sm text-red-600">{error}</p>
+                <p className="text-sm text-red-600">{signOutError}</p>
               </div>
             )}
             <Button
               variant="destructive"
               className="w-full"
               onClick={handleSignOut}
-              disabled={loading}
+              disabled={signOutLoading}
             >
-              {loading ? "Signing out..." : "Sign Out"}
+              {signOutLoading ? "Signing out..." : "Sign Out"}
             </Button>
             <Button variant="destructive" className="w-full">Delete Account</Button>
           </CardContent>
