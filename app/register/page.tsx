@@ -74,7 +74,7 @@ function RegisterForm() {
 
   if (success) {
     return (
-      <main className="min-h-screen bg-muted/30 flex items-center justify-center px-4">
+      <div className="flex flex-1 items-center justify-center px-4 py-12 bg-muted/30">
         <Card className="w-full max-w-md shadow-lg border">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-green-600">Success!</CardTitle>
@@ -88,12 +88,12 @@ function RegisterForm() {
             </Button>
           </CardContent>
         </Card>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-muted/30 flex items-center justify-center px-4">
+    <div className="flex flex-1 items-center justify-center px-4 bg-muted/30">
       <Card className="w-full max-w-md shadow-lg border">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>
@@ -175,7 +175,7 @@ function RegisterForm() {
           </form>
         </CardContent>
       </Card>
-    </main>
+    </div>
   );
 }
 
