@@ -1,19 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
-const navLinks = [
+const guestLinks = [
   { href: "/", label: "Home" },
-  { href: "/profile", label: "Profile" },
   { href: "/login", label: "Sign In" },
   { href: "/register", label: "Sign Up" },
 ];
 
+const memberLinks = [
+  { href: "/", label: "Home" },
+  { href: "/profile", label: "Profile" },
+  { href: "/settings", label: "Settings" },
+];
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    const loadUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsLoggedIn(!!user);
+    };
+
+    loadUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session?.user);
+    });
+
+    return () => { subscription.unsubscribe(); };
+  }, []);
+
+  const navLinks = isLoggedIn ? memberLinks : guestLinks;
 
   return (
     <>
