@@ -184,10 +184,20 @@ export default function ProfilePage() {
   };
 
   const handleAddSkill = () => {
-    const trimmedSkill = skillInput.trim();
-    if (!trimmedSkill || skills.includes(trimmedSkill)) return;
+    const trimmed = skillInput.trim();
+    if (!trimmed) return;
 
-    setSkills([...skills, trimmedSkill]);
+    const normalized = trimmed.toLowerCase();
+    const exists = skills.some((skill) => skill.toLowerCase() === normalized);
+
+    if (exists) {
+      setSkillInput("");
+      return;
+    }
+
+    const formatted = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+
+    setSkills([...skills, formatted]);
     setSkillInput("");
   };
 
@@ -196,10 +206,22 @@ export default function ProfilePage() {
   };
 
   const handleAddDesiredSkill = () => {
-    const trimmedSkill = desiredSkillInput.trim();
-    if (!trimmedSkill || desiredSkills.includes(trimmedSkill)) return;
+    const trimmed = desiredSkillInput.trim();
+    if (!trimmed) return;
 
-    setDesiredSkills([...desiredSkills, trimmedSkill]);
+    const normalized = trimmed.toLowerCase();
+    const exists = desiredSkills.some(
+      (skill) => skill.toLowerCase() === normalized
+    );
+
+    if (exists) {
+      setDesiredSkillInput("");
+      return;
+    }
+
+    const formatted = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+
+    setDesiredSkills([...desiredSkills, formatted]);
     setDesiredSkillInput("");
   };
 
