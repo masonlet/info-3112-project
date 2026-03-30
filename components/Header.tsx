@@ -19,13 +19,13 @@ const memberLinks = [
   { href: "/settings", label: "Settings" },
 ];
 
+const supabase = createClient();
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
-
     const loadUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setIsLoggedIn(!!user);
