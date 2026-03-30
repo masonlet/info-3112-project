@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormFields } from "@/hooks/useFormFields";
 import { validateEmail } from "@/lib/auth-validation";
@@ -42,7 +43,7 @@ export default function ProfilePage() {
     photoUrl: "",
   });
 
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [submittedProfile, setSubmittedProfile] = useState<ProfileFormData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saveMessage, setSaveMessage] = useState("");
@@ -304,12 +305,9 @@ export default function ProfilePage() {
                     <p className="text-sm text-muted-foreground">No skills added.</p>
                   ) : (
                     skills.map((skill) => (
-                      <div
-                        key={skill}
-                        className="rounded-md border bg-background px-3 py-1 text-sm"
-                      >
+                      <Badge key={skill} variant="secondary" className="px-3 py-1 text-sm">
                         {skill}
-                      </div>
+                      </Badge>
                     ))
                   )}
                 </div>
@@ -322,12 +320,9 @@ export default function ProfilePage() {
                     <p className="text-sm text-muted-foreground">No desired skills added.</p>
                   ) : (
                     desiredSkills.map((skill) => (
-                      <div
-                        key={skill}
-                        className="rounded-md border bg-background px-3 py-1 text-sm"
-                      >
+                      <Badge key={skill} variant="secondary" className="px-3 py-1 text-sm">
                         {skill}
-                      </div>
+                      </Badge>
                     ))
                   )}
                 </div>
@@ -566,9 +561,10 @@ export default function ProfilePage() {
                     <p className="text-sm text-muted-foreground">No skills added yet.</p>
                   ) : (
                     skills.map((skill) => (
-                      <div
+                      <Badge
                         key={skill}
-                        className="flex items-center gap-2 rounded-md border bg-background px-3 py-1 text-sm"
+                        variant="secondary"
+                        className="flex items-center gap-2 px-3 py-1 text-sm"
                       >
                         <span>{skill}</span>
                         <button
@@ -578,7 +574,7 @@ export default function ProfilePage() {
                         >
                           ×
                         </button>
-                      </div>
+                      </Badge>
                     ))
                   )}
                 </div>
@@ -603,9 +599,10 @@ export default function ProfilePage() {
                     <p className="text-sm text-muted-foreground">No desired skills added yet.</p>
                   ) : (
                     desiredSkills.map((skill) => (
-                      <div
+                      <Badge
                         key={skill}
-                        className="flex items-center gap-2 rounded-md border bg-background px-3 py-1 text-sm"
+                        variant="secondary"
+                        className="flex items-center gap-2 px-3 py-1 text-sm"
                       >
                         <span>{skill}</span>
                         <button
@@ -615,7 +612,7 @@ export default function ProfilePage() {
                         >
                           ×
                         </button>
-                      </div>
+                      </Badge>
                     ))
                   )}
                 </div>
