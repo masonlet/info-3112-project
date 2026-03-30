@@ -1,19 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
-const navLinks = [
+const guestLinks = [
   { href: "/", label: "Home" },
-  { href: "/profile", label: "Profile" },
   { href: "/login", label: "Sign In" },
   { href: "/register", label: "Sign Up" },
 ];
 
+const memberLinks = [
+  { href: "/", label: "Home" },
+  { href: "/matches", label: "Matches" },
+  { href: "/profile", label: "Profile" },
+  { href: "/settings", label: "Settings" },
+];
+
+const Logo = () => (
+  <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
+    <Heart className="w-5 h-5 text-rose-500" />
+    LookingForLove
+  </Link>
+);
+
+const supabase = createClient();
+
 export default function Header() {
+  const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsLoggedIn(!!user);
+      setLoading(false);
+    };
+
+    loadUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session?.user);
+      setLoading(false);
+    });
+
+    return () => { subscription.unsubscribe(); };
+  }, []);
+
+  if (loading) return (
+    <header className="relative z-50 border-b bg-background px-4 py-3">
+      <div className="max-w-5xl mx-auto flex items-center justify-between">
+        <Logo/>
+      </div>
+    </header>
+  );
+
+  const navLinks = isLoggedIn ? memberLinks : guestLinks;
 
   return (
     <>
@@ -26,10 +71,7 @@ export default function Header() {
 
       <header className="relative z-50 border-b bg-background px-4 py-3">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
-            <Heart className="w-5 h-5 text-rose-500" />
-            LookingForLove
-          </Link>
+          <Logo/>
 
           <nav className="hidden sm:flex items-center gap-2">
             {navLinks.map(({ href, label }) => (
