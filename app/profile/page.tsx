@@ -230,6 +230,32 @@ export default function ProfilePage() {
     setDesiredSkills(desiredSkills.filter((skill) => skill !== skillToRemove));
   };
 
+  const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      if (skillInput.trim()) {
+        handleAddSkill();
+      } else {
+        const form = e.currentTarget.closest("form");
+        form?.requestSubmit();
+      }
+    }
+  };
+
+  const handleDesiredSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      if (desiredSkillInput.trim()) {
+        handleAddDesiredSkill();
+      } else {
+        const form = e.currentTarget.closest("form");
+        form?.requestSubmit();
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex-1 py-10 px-4 bg-muted/30">
@@ -549,6 +575,7 @@ export default function ProfilePage() {
                   <Input
                     value={skillInput}
                     onChange={(e) => setSkillInput(e.target.value)}
+                    onKeyDown={handleSkillKeyDown}
                     placeholder="Enter a skill"
                   />
                   <Button type="button" onClick={handleAddSkill}>
@@ -587,6 +614,7 @@ export default function ProfilePage() {
                   <Input
                     value={desiredSkillInput}
                     onChange={(e) => setDesiredSkillInput(e.target.value)}
+                    onKeyDown={handleDesiredSkillKeyDown}
                     placeholder="Enter a desired skill"
                   />
                   <Button type="button" onClick={handleAddDesiredSkill}>
