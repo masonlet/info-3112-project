@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Settings() {
-  const router = useRouter();
   const supabase = createClient();
 
   const [error, setError] = useState<string | null>(null);
@@ -19,8 +17,7 @@ export default function Settings() {
     setLoading(true);
     try {
       await supabase.auth.signOut();
-      router.push("/login");
-      router.refresh();
+      window.location.href = "/login";
     } catch {
       setError("Failed to sign out. Please try again.");
       setLoading(false);
