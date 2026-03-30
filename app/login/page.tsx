@@ -58,7 +58,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-muted/30 flex items-center justify-center px-4">
+    <div className="flex items-center flex-1 justify-center px-4 py-12 bg-muted/30">
       <Card className="w-full max-w-md shadow-lg border">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
@@ -113,6 +113,6 @@ export default function LoginPage() {
           </form>
         </CardContent>
       </Card>
-    </main>
+    </div>
   );
 }
