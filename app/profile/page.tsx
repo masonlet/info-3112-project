@@ -46,6 +46,10 @@ export default function ProfilePage() {
   const [submittedProfile, setSubmittedProfile] = useState<ProfileFormData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saveMessage, setSaveMessage] = useState("");
+  const [skillInput, setSkillInput] = useState("");
+  const [desiredSkillInput, setDesiredSkillInput] = useState("");
+  const [skills, setSkills] = useState<string[]>([]);
+  const [desiredSkills, setDesiredSkills] = useState<string[]>([]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -113,6 +117,8 @@ export default function ProfilePage() {
 
       setFormData(loadedProfile);
       setSubmittedProfile(loadedProfile);
+      setSkills(data.skills ?? []);
+      setDesiredSkills(data.desired_skills ?? []);
     }
 
     setLoading(false);
@@ -153,6 +159,8 @@ export default function ProfilePage() {
       contact_identifier: formData.contactIdentifier,
       member_type: formData.memberType,
       photo_url: formData.photoUrl || null,
+      skills,
+      desired_skills: desiredSkills,
       updated_at: new Date().toISOString(),
     };
 
@@ -175,7 +183,31 @@ export default function ProfilePage() {
     setSaveMessage("");
   };
 
-    if (loading) {
+  const handleAddSkill = () => {
+    const trimmedSkill = skillInput.trim();
+    if (!trimmedSkill || skills.includes(trimmedSkill)) return;
+
+    setSkills([...skills, trimmedSkill]);
+    setSkillInput("");
+  };
+
+  const handleRemoveSkill = (skillToRemove: string) => {
+    setSkills(skills.filter((skill) => skill !== skillToRemove));
+  };
+
+  const handleAddDesiredSkill = () => {
+    const trimmedSkill = desiredSkillInput.trim();
+    if (!trimmedSkill || desiredSkills.includes(trimmedSkill)) return;
+
+    setDesiredSkills([...desiredSkills, trimmedSkill]);
+    setDesiredSkillInput("");
+  };
+
+  const handleRemoveDesiredSkill = (skillToRemove: string) => {
+    setDesiredSkills(desiredSkills.filter((skill) => skill !== skillToRemove));
+  };
+
+  if (loading) {
     return (
       <div className="flex-1 py-10 px-4 bg-muted/30">
         <div className="max-w-2xl mx-auto">
@@ -240,6 +272,42 @@ export default function ProfilePage() {
                     label="Photo URL"
                     value={submittedProfile.photoUrl || "Not provided"}
                   />
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-lg font-semibold">My Skills</h2>
+                <div className="flex flex-wrap gap-2">
+                  {skills.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No skills added.</p>
+                  ) : (
+                    skills.map((skill) => (
+                      <div
+                        key={skill}
+                        className="rounded-md border bg-background px-3 py-1 text-sm"
+                      >
+                        {skill}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-lg font-semibold">Desired Skills in a Match</h2>
+                <div className="flex flex-wrap gap-2">
+                  {desiredSkills.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No desired skills added.</p>
+                  ) : (
+                    desiredSkills.map((skill) => (
+                      <div
+                        key={skill}
+                        className="rounded-md border bg-background px-3 py-1 text-sm"
+                      >
+                        {skill}
+                      </div>
+                    ))
+                  )}
                 </div>
               </section>
 
@@ -454,6 +522,80 @@ export default function ProfilePage() {
                     value={formData.photoUrl}
                     onChange={handleChange}
                   />
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-lg font-semibold">My Skills</h2>
+
+                <div className="flex gap-2">
+                  <Input
+                    value={skillInput}
+                    onChange={(e) => setSkillInput(e.target.value)}
+                    placeholder="Enter a skill"
+                  />
+                  <Button type="button" onClick={handleAddSkill}>
+                    Add
+                  </Button>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {skills.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No skills added yet.</p>
+                  ) : (
+                    skills.map((skill) => (
+                      <div
+                        key={skill}
+                        className="flex items-center gap-2 rounded-md border bg-background px-3 py-1 text-sm"
+                      >
+                        <span>{skill}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSkill(skill)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-lg font-semibold">Desired Skills in a Match</h2>
+
+                <div className="flex gap-2">
+                  <Input
+                    value={desiredSkillInput}
+                    onChange={(e) => setDesiredSkillInput(e.target.value)}
+                    placeholder="Enter a desired skill"
+                  />
+                  <Button type="button" onClick={handleAddDesiredSkill}>
+                    Add
+                  </Button>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {desiredSkills.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No desired skills added yet.</p>
+                  ) : (
+                    desiredSkills.map((skill) => (
+                      <div
+                        key={skill}
+                        className="flex items-center gap-2 rounded-md border bg-background px-3 py-1 text-sm"
+                      >
+                        <span>{skill}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveDesiredSkill(skill)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))
+                  )}
                 </div>
               </section>
 
