@@ -30,7 +30,9 @@ export async function GET() {
     );
   }
 
-  if (currentProfile.member_type !== "Paid") {
+  const hasPaidAccess = Boolean(currentProfile.is_paid) || currentProfile.member_type === "Paid";
+
+  if (!hasPaidAccess) {
     return NextResponse.json(
       { error: "Upgrade to a paid membership to view matches." },
       { status: 403 }
@@ -40,7 +42,7 @@ export async function GET() {
   const { data: candidates, error: candidatesError } = await supabase
     .from("profiles")
     .select("*")
-    .eq("member_type", "Paid")
+    .or("is_paid.eq.true,member_type.eq.Paid")
     .neq("user_id", user.id);
 
   if (candidatesError) {
