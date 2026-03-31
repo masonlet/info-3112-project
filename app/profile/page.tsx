@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback, useMemo } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,6 +38,7 @@ type ProfileFormData = {
 };
 
 export default function ProfilePage() {
+  const router = useRouter();
   const {
     formData, setFormData,
     errors, setErrors,
@@ -70,6 +73,7 @@ export default function ProfilePage() {
   const [skills, setSkills] = useState<string[]>([]);
   const [desiredSkills, setDesiredSkills] = useState<string[]>([]);
   const [hasExistingProfile, setHasExistingProfile] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -163,6 +167,7 @@ export default function ProfilePage() {
       setSkills(data.skills ?? []);
       setDesiredSkills(data.desired_skills ?? []);
       setHasExistingProfile(true);
+      setIsPaid(Boolean(data.is_paid) || data.member_type === "Paid");
     }
 
     setLoading(false);
@@ -199,6 +204,15 @@ export default function ProfilePage() {
       return;
     }
 
+    const nextIsPaid = formData.memberType === "Paid";
+    const nextMemberType = nextIsPaid ? "Paid" : "Free";
+
+    if (nextIsPaid && !isPaid) {
+      setSaveMessage("Complete subscription to switch to Paid membership.");
+      router.push("/subscribe");
+      return;
+    }
+
     const profilePayload = {
       user_id: user.id,
       salutation: formData.salutation,
@@ -221,6 +235,7 @@ export default function ProfilePage() {
       desired_skills: desiredSkills,
 
       member_type: formData.memberType,
+      is_paid: nextIsPaid,
 
       updated_at: new Date().toISOString(),
     };
@@ -236,7 +251,11 @@ export default function ProfilePage() {
     }
 
     setSaveMessage("Profile saved successfully.");
-    setSubmittedProfile(formData);
+    setIsPaid(nextIsPaid);
+    setSubmittedProfile({
+      ...formData,
+      memberType: nextMemberType,
+    });
   };
 
   const handleEditProfile = () => {
@@ -438,7 +457,23 @@ export default function ProfilePage() {
                 <h2 className="text-lg font-semibold">Membership Details</h2>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <SummaryItem label="Member Type" value={submittedProfile.memberType} />
+                  <SummaryItem label="Subscription" value={isPaid ? "Paid" : "Free"} />
                 </div>
+
+                {!isPaid && (
+                  <div className="flex items-center justify-between rounded-lg border bg-background p-3">
+                    <div>
+                      <p className="text-sm font-medium">Premium Access</p>
+                      <p className="text-sm text-muted-foreground">
+                        Upgrade to unlock full access.
+                      </p>
+                    </div>
+
+                    <Button asChild size="sm">
+                      <Link href="/subscribe">Upgrade</Link>
+                    </Button>
+                  </div>
+                )}
               </section>
 
               <Button onClick={handleEditProfile} className="w-full">
