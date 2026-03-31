@@ -25,6 +25,7 @@ export default function EmailCard() {
   }, []);
 
   const handleEmailChange = async () => {
+    setErrors({});
     setEmailSuccess(false);
     const emailErr = validateEmail(formData.email);
     if (emailErr) return setErrors({ email: emailErr });

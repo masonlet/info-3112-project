@@ -15,6 +15,7 @@ export default function DangerZoneCard() {
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleSignOut = async () => {
+    setSignOutError(null);
     setSignOutLoading(true);
     try {
       await supabase.auth.signOut();
@@ -28,6 +29,7 @@ export default function DangerZoneCard() {
   const handleDeleteAccount = async () => {
     if (!confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
 
+    setDeleteError(null);
     setDeleteLoading(true);
     try {
       const res = await fetch("/api/delete-account", { method: "DELETE" });

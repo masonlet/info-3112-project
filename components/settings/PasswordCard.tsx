@@ -36,6 +36,7 @@ export default function PasswordCard() {
 
   const handleSendCode = async (e?: React.FormEvent) => {
     e?.preventDefault();
+    setErrors({});
     setPasswordSuccess(false);
     const newErrors: Record<string, string> = {};
     const passErr = validatePassword(formData.password);
@@ -59,6 +60,7 @@ export default function PasswordCard() {
     e?.preventDefault();
     if (!formData.otp) return setErrors({ otp: "Verification code is required." });
 
+    setErrors({});
     setPasswordLoading(true);
     try {
       const { error } = await supabase.auth.updateUser({
