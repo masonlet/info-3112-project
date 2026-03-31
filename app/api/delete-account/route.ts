@@ -4,6 +4,14 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function DELETE() {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error("CRITICAL: Service role key is missing from ENV variables.");
+    return NextResponse.json(
+      { error: "Server configuration error. Please contact an admin." },
+      { status: 500 }
+    )
+  }
+
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
