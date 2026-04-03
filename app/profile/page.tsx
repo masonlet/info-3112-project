@@ -8,7 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormFields } from "@/hooks/useFormFields";
-import { validateEmail } from "@/lib/auth-validation";
+import {
+  validateContactVisibility,
+  validateEmail,
+} from "@/lib/auth-validation";
+import { getDefaultContactVisibility } from "@/lib/contact-permissions";
 
 type ProfileFormData = {
   salutation: string;
@@ -22,6 +26,7 @@ type ProfileFormData = {
   contactIdentifier: string;
   memberType: string;
   photoUrl: string;
+  showContactInfo: boolean;
 };
 
 export default function ProfilePage() {
@@ -41,6 +46,7 @@ export default function ProfilePage() {
     contactIdentifier: "",
     memberType: "",
     photoUrl: "",
+    showContactInfo: getDefaultContactVisibility(),
   });
 
   const supabase = useMemo(() => createClient(), []);
@@ -67,8 +73,14 @@ export default function ProfilePage() {
     if (!formData.preferredContactMethod)
       newErrors.preferredContactMethod = "Preferred contact method is required.";
 
-    if (!formData.contactIdentifier.trim())
-      newErrors.contactIdentifier = "Contact identifier is required.";
+    const contactVisibilityError = validateContactVisibility(
+      formData.showContactInfo,
+      formData.contactIdentifier,
+    );
+
+    if (contactVisibilityError) {
+      newErrors.contactIdentifier = contactVisibilityError;
+    }
 
     if (!formData.memberType)
       newErrors.memberType = "Member type is required.";
@@ -114,6 +126,7 @@ export default function ProfilePage() {
         contactIdentifier: data.contact_identifier ?? "",
         memberType: data.member_type ?? "",
         photoUrl: data.photo_url ?? "",
+        showContactInfo: data.show_contact_info ?? getDefaultContactVisibility(),
       };
 
       setFormData(loadedProfile);
@@ -160,6 +173,7 @@ export default function ProfilePage() {
       contact_identifier: formData.contactIdentifier,
       member_type: formData.memberType,
       photo_url: formData.photoUrl || null,
+      show_contact_info: formData.showContactInfo,
       skills,
       desired_skills: desiredSkills,
       updated_at: new Date().toISOString(),
@@ -309,6 +323,10 @@ export default function ProfilePage() {
                   <SummaryItem
                     label="Contact Identifier"
                     value={submittedProfile.contactIdentifier}
+                  />
+                  <SummaryItem
+                    label="Contact Visibility"
+                    value={submittedProfile.showContactInfo ? "Visible to eligible members" : "Hidden"}
                   />
                 </div>
               </section>
@@ -532,6 +550,22 @@ export default function ProfilePage() {
                       {errors.contactIdentifier}
                     </p>
                   )}
+                </div>
+
+                <div className="rounded-md border bg-background px-3 py-3">
+                  <label htmlFor="showContactInfo" className="flex items-start gap-3 text-sm">
+                    <input
+                      id="showContactInfo"
+                      name="showContactInfo"
+                      type="checkbox"
+                      checked={formData.showContactInfo}
+                      onChange={handleChange}
+                      className="mt-0.5 h-4 w-4"
+                    />
+                    <span>
+                      Allow eligible members to request and view my contact identifier.
+                    </span>
+                  </label>
                 </div>
               </section>
 
