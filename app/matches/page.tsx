@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   type Profile,
   type Match,
@@ -16,6 +17,49 @@ export default function MatchesPage() {
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [revealedContacts, setRevealedContacts] = useState<
+    Record<string, { contactMethod: string; contactIdentifier: string }>
+  >({});
+  const [requestErrors, setRequestErrors] = useState<Record<string, string>>({});
+  const [pendingRequests, setPendingRequests] = useState<Record<string, boolean>>({});
+
+  async function handleRequestContactInfo(targetUserId: string) {
+    setPendingRequests((prev) => ({ ...prev, [targetUserId]: true }));
+    setRequestErrors((prev) => ({ ...prev, [targetUserId]: "" }));
+
+    try {
+      const res = await fetch("/api/contact-info/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetUserId }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setRequestErrors((prev) => ({
+          ...prev,
+          [targetUserId]: data.error ?? "Failed to request contact information.",
+        }));
+        return;
+      }
+
+      setRevealedContacts((prev) => ({
+        ...prev,
+        [targetUserId]: {
+          contactMethod: data.contactMethod,
+          contactIdentifier: data.contactIdentifier,
+        },
+      }));
+    } catch {
+      setRequestErrors((prev) => ({
+        ...prev,
+        [targetUserId]: "Network error while requesting contact information.",
+      }));
+    } finally {
+      setPendingRequests((prev) => ({ ...prev, [targetUserId]: false }));
+    }
+  }
 
   useEffect(() => {
     async function loadMatches() {
@@ -96,7 +140,15 @@ export default function MatchesPage() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {matches.map((match) => (
-            <MatchCard key={match.user_id} match={match} currentUser={currentProfile!} />
+            <MatchCard
+              key={match.user_id}
+              match={match}
+              currentUser={currentProfile!}
+              revealedContact={revealedContacts[match.user_id]}
+              requestError={requestErrors[match.user_id]}
+              isRequestPending={pendingRequests[match.user_id] ?? false}
+              onRequestContactInfo={handleRequestContactInfo}
+            />
           ))}
         </div>
       </div>
@@ -104,7 +156,21 @@ export default function MatchesPage() {
   );
 }
 
-function MatchCard({ match, currentUser }: { match: Match; currentUser: Profile }) {
+function MatchCard({
+  match,
+  currentUser,
+  revealedContact,
+  requestError,
+  isRequestPending,
+  onRequestContactInfo,
+}: {
+  match: Match;
+  currentUser: Profile;
+  revealedContact?: { contactMethod: string; contactIdentifier: string };
+  requestError?: string;
+  isRequestPending: boolean;
+  onRequestContactInfo: (targetUserId: string) => void;
+}) {
   const age = calculateAge(match.date_of_birth);
   const currentUserAge = calculateAge(currentUser.date_of_birth);
   const ageDiff = Math.abs(age - currentUserAge);
@@ -187,6 +253,26 @@ function MatchCard({ match, currentUser }: { match: Match; currentUser: Profile 
           <p className="text-xs text-muted-foreground">Preferred Contact</p>
           <p className="text-sm font-medium">{match.preferred_contact_method}</p>
         </div>
+
+        {revealedContact ? (
+          <div className="rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2">
+            <p className="text-xs text-emerald-700">Contact Shared</p>
+            <p className="text-sm font-medium text-emerald-900">
+              {revealedContact.contactMethod}: {revealedContact.contactIdentifier}
+            </p>
+          </div>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isRequestPending}
+            onClick={() => onRequestContactInfo(match.user_id)}
+          >
+            {isRequestPending ? "Requesting..." : "Request Contact Info"}
+          </Button>
+        )}
+
+        {requestError && <p className="text-xs text-red-500">{requestError}</p>}
       </CardContent>
     </Card>
   );
