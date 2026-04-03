@@ -4,6 +4,7 @@ import { useFormFields } from "@/hooks/useFormFields";
 
 describe("useFormFields", () => {
   const initial = { email: "", password: "" };
+  const initialWithToggle = { email: "", showContactInfo: false };
 
   it("initializes with provided values", () => {
     const { result } = renderHook(() => useFormFields(initial));
@@ -43,5 +44,22 @@ describe("useFormFields", () => {
       } as React.ChangeEvent<HTMLInputElement>);
     });
     expect(result.current.errors.password).toBe("Required");
+  });
+
+  it("uses checkbox checked value for boolean fields", () => {
+    const { result } = renderHook(() => useFormFields(initialWithToggle));
+
+    act(() => {
+      result.current.handleChange({
+        target: {
+          name: "showContactInfo",
+          type: "checkbox",
+          checked: true,
+          value: "on",
+        },
+      } as React.ChangeEvent<HTMLInputElement>);
+    });
+
+    expect(result.current.formData.showContactInfo).toBe(true);
   });
 });
