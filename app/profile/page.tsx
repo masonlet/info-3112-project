@@ -17,11 +17,17 @@ type ProfileFormData = {
   nickname: string;
   dateOfBirth: string;
   gender: string;
-  email: string;
-  preferredContactMethod: string;
-  contactIdentifier: string;
-  memberType: string;
   photoUrl: string;
+
+  email: string;
+  phone: string;
+  discord: string;
+  linkedin: string;
+  preferredContactMethod: string;
+  
+  memberType: string;
+  
+  desiredGender: string;
 };
 
 export default function ProfilePage() {
@@ -36,11 +42,17 @@ export default function ProfilePage() {
     nickname: "",
     dateOfBirth: "",
     gender: "",
-    email: "",
-    preferredContactMethod: "",
-    contactIdentifier: "",
-    memberType: "",
     photoUrl: "",
+
+    email: "",
+    phone: "",
+    discord: "",
+    linkedin: "",
+    preferredContactMethod: "",
+    
+    memberType: "",
+    
+    desiredGender: "",
   });
 
   const supabase = useMemo(() => createClient(), []);
@@ -51,6 +63,7 @@ export default function ProfilePage() {
   const [desiredSkillInput, setDesiredSkillInput] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
   const [desiredSkills, setDesiredSkills] = useState<string[]>([]);
+  const [hasExistingProfile, setHasExistingProfile] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -67,8 +80,25 @@ export default function ProfilePage() {
     if (!formData.preferredContactMethod)
       newErrors.preferredContactMethod = "Preferred contact method is required.";
 
-    if (!formData.contactIdentifier.trim())
-      newErrors.contactIdentifier = "Contact identifier is required.";
+    if (!formData.preferredContactMethod) {
+      newErrors.preferredContactMethod = "Preferred contact method is required.";
+    }
+
+    if (formData.preferredContactMethod === "Email" && !formData.email.trim()) {
+      newErrors.email = "Email is required when it is the preferred contact method.";
+    }
+
+    if (formData.preferredContactMethod === "Phone" && !formData.phone.trim()) {
+      newErrors.phone = "Phone number is required when it is the preferred contact method.";
+    }
+
+    if (formData.preferredContactMethod === "Discord" && !formData.discord.trim()) {
+      newErrors.discord = "Discord username is required when it is the preferred contact method.";
+    }
+
+    if (formData.preferredContactMethod === "LinkedIn" && !formData.linkedin.trim()) {
+      newErrors.linkedin = "LinkedIn profile is required when it is the preferred contact method.";
+    }
 
     if (!formData.memberType)
       newErrors.memberType = "Member type is required.";
@@ -109,17 +139,24 @@ export default function ProfilePage() {
         nickname: data.nickname ?? "",
         dateOfBirth: data.date_of_birth ?? "",
         gender: data.gender ?? "",
-        email: data.email ?? "",
-        preferredContactMethod: data.preferred_contact_method ?? "",
-        contactIdentifier: data.contact_identifier ?? "",
-        memberType: data.member_type ?? "",
         photoUrl: data.photo_url ?? "",
+
+        email: data.email ?? "",
+        phone: data.phone ?? "",
+        discord: data.discord ?? "",
+        linkedin: data.linkedin ?? "",
+        preferredContactMethod: data.preferred_contact_method ?? "",
+
+        memberType: data.member_type ?? "",
+
+        desiredGender: data.desired_gender ?? "",
       };
 
       setFormData(loadedProfile);
       setSubmittedProfile(loadedProfile);
       setSkills(data.skills ?? []);
       setDesiredSkills(data.desired_skills ?? []);
+      setHasExistingProfile(true);
     }
 
     setLoading(false);
@@ -156,10 +193,16 @@ export default function ProfilePage() {
       date_of_birth: formData.dateOfBirth,
       gender: formData.gender,
       email: formData.email,
+      phone: formData.phone || null,
+      discord: formData.discord || null,
+      linkedin: formData.linkedin || null,
       preferred_contact_method: formData.preferredContactMethod,
-      contact_identifier: formData.contactIdentifier,
+
       member_type: formData.memberType,
       photo_url: formData.photoUrl || null,
+
+      desired_gender: formData.desiredGender,
+
       skills,
       desired_skills: desiredSkills,
       updated_at: new Date().toISOString(),
@@ -295,21 +338,78 @@ export default function ProfilePage() {
                   />
                   <SummaryItem label="Date of Birth" value={submittedProfile.dateOfBirth} />
                   <SummaryItem label="Gender" value={submittedProfile.gender} />
+                  <SummaryItem
+                    label="Photo URL"
+                    value={submittedProfile.photoUrl || "Not provided"}
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <h3 className="text-base font-medium mb-2">My Skills</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {skills.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No skills added.</p>
+                    ) : (
+                      skills.map((skill) => (
+                        <Badge key={skill} variant="secondary" className="px-3 py-1 text-sm">
+                          {skill}
+                        </Badge>
+                      ))
+                    )}
+                  </div>
                 </div>
               </section>
 
               <section className="space-y-3">
                 <h2 className="text-lg font-semibold">Contact Information</h2>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <SummaryItem label="Email" value={submittedProfile.email} />
+                  <SummaryItem
+                    label="Email"
+                    value={submittedProfile.email || "Not provided"}
+                  />
+                  <SummaryItem
+                    label="Phone"
+                    value={submittedProfile.phone || "Not provided"}
+                  />
+                  <SummaryItem
+                    label="Discord"
+                    value={submittedProfile.discord || "Not provided"}
+                  />
+                  <SummaryItem
+                    label="LinkedIn"
+                    value={submittedProfile.linkedin || "Not provided"}
+                  />
                   <SummaryItem
                     label="Preferred Contact Method"
-                    value={submittedProfile.preferredContactMethod}
+                    value={submittedProfile.preferredContactMethod || "Not provided"}
                   />
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-lg font-semibold">Desired Partner</h2>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <SummaryItem
-                    label="Contact Identifier"
-                    value={submittedProfile.contactIdentifier}
+                    label="Desired Gender"
+                    value={submittedProfile.desiredGender || "Not provided"}
                   />
+                </div>
+
+                <div className="pt-2">
+                  <h3 className="text-base font-medium mb-2">Desired Skills</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {desiredSkills.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">
+                        No desired skills added.
+                      </p>
+                    ) : (
+                      desiredSkills.map((skill) => (
+                        <Badge key={skill} variant="secondary" className="px-3 py-1 text-sm">
+                          {skill}
+                        </Badge>
+                      ))
+                    )}
+                  </div>
                 </div>
               </section>
 
@@ -317,40 +417,6 @@ export default function ProfilePage() {
                 <h2 className="text-lg font-semibold">Membership Details</h2>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <SummaryItem label="Member Type" value={submittedProfile.memberType} />
-                  <SummaryItem
-                    label="Photo URL"
-                    value={submittedProfile.photoUrl || "Not provided"}
-                  />
-                </div>
-              </section>
-
-              <section className="space-y-3">
-                <h2 className="text-lg font-semibold">My Skills</h2>
-                <div className="flex flex-wrap gap-2">
-                  {skills.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No skills added.</p>
-                  ) : (
-                    skills.map((skill) => (
-                      <Badge key={skill} variant="secondary" className="px-3 py-1 text-sm">
-                        {skill}
-                      </Badge>
-                    ))
-                  )}
-                </div>
-              </section>
-
-              <section className="space-y-3">
-                <h2 className="text-lg font-semibold">Desired Skills in a Match</h2>
-                <div className="flex flex-wrap gap-2">
-                  {desiredSkills.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No desired skills added.</p>
-                  ) : (
-                    desiredSkills.map((skill) => (
-                      <Badge key={skill} variant="secondary" className="px-3 py-1 text-sm">
-                        {skill}
-                      </Badge>
-                    ))
-                  )}
                 </div>
               </section>
 
@@ -369,7 +435,9 @@ export default function ProfilePage() {
       <div className="max-w-2xl mx-auto">
         <Card className="shadow-lg border">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Create Your Profile</CardTitle>
+            <CardTitle className="text-2xl font-bold">
+              {hasExistingProfile ? "Edit Your Profile" : "Create Your Profile"}
+            </CardTitle>
             <p className="text-sm text-muted-foreground">
               Enter your personal and contact information to build your member
               profile.
@@ -378,6 +446,8 @@ export default function ProfilePage() {
 
           <CardContent>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+
+              {/* PERSONAL INFORMATION */}
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Personal Information</h2>
 
@@ -474,8 +544,60 @@ export default function ProfilePage() {
                     <p className="mt-1 text-sm text-red-500">{errors.gender}</p>
                   )}
                 </div>
+
+                <div>
+                  <Label htmlFor="photoUrl">Photo URL (Optional)</Label>
+                  <Input
+                    id="photoUrl"
+                    name="photoUrl"
+                    placeholder="Paste photo URL"
+                    value={formData.photoUrl}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="pt-4 space-y-3">
+                  <h3 className="text-base font-medium">My Skills</h3>
+
+                  <div className="flex gap-2">
+                    <Input
+                      value={skillInput}
+                      onChange={(e) => setSkillInput(e.target.value)}
+                      onKeyDown={handleSkillKeyDown}
+                      placeholder="Enter a skill"
+                    />
+                    <Button type="button" onClick={handleAddSkill}>
+                      Add
+                    </Button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {skills.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No skills added yet.</p>
+                    ) : (
+                      skills.map((skill) => (
+                        <Badge
+                          key={skill}
+                          variant="secondary"
+                          className="flex items-center gap-2 px-3 py-1 text-sm"
+                        >
+                          <span>{skill}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSkill(skill)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            ×
+                          </button>
+                        </Badge>
+                      ))
+                    )}
+                  </div>
+                </div>
               </section>
 
+
+              {/* CONTACT INFORMATION */}
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Contact Information</h2>
 
@@ -492,6 +614,39 @@ export default function ProfilePage() {
                   {errors.email && (
                     <p className="mt-1 text-sm text-red-500">{errors.email}</p>
                   )}
+                </div>
+
+                <div>
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter phone number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="discord">Discord Username</Label>
+                  <Input
+                    id="discord"
+                    name="discord"
+                    placeholder="Enter Discord username"
+                    value={formData.discord}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="linkedin">LinkedIn Profile</Label>
+                  <Input
+                    id="linkedin"
+                    name="linkedin"
+                    placeholder="Enter LinkedIn profile URL"
+                    value={formData.linkedin}
+                    onChange={handleChange}
+                  />
                 </div>
 
                 <div>
@@ -517,24 +672,74 @@ export default function ProfilePage() {
                     </p>
                   )}
                 </div>
+              </section>
+
+
+              {/* DESIRED PARTNER */}
+              <section className="space-y-4">
+                <h2 className="text-lg font-semibold">Desired Partner</h2>
 
                 <div>
-                  <Label htmlFor="contactIdentifier">Contact Identifier</Label>
-                  <Input
-                    id="contactIdentifier"
-                    name="contactIdentifier"
-                    placeholder="Enter your contact details"
-                    value={formData.contactIdentifier}
+                  <Label htmlFor="desiredGender">Desired Gender</Label>
+                  <select
+                    id="desiredGender"
+                    name="desiredGender"
+                    value={formData.desiredGender}
                     onChange={handleChange}
-                  />
-                  {errors.contactIdentifier && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.contactIdentifier}
-                    </p>
-                  )}
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="">Select desired gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-Binary">Non-Binary</option>
+                    <option value="No Preference">No Preference</option>
+                  </select>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-base font-medium">Desired Skills</h3>
+
+                  <div className="flex gap-2">
+                    <Input
+                      value={desiredSkillInput}
+                      onChange={(e) => setDesiredSkillInput(e.target.value)}
+                      onKeyDown={handleDesiredSkillKeyDown}
+                      placeholder="Enter a desired skill"
+                    />
+                    <Button type="button" onClick={handleAddDesiredSkill}>
+                      Add
+                    </Button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {desiredSkills.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">
+                        No desired skills added yet.
+                      </p>
+                    ) : (
+                      desiredSkills.map((skill) => (
+                        <Badge
+                          key={skill}
+                          variant="secondary"
+                          className="flex items-center gap-2 px-3 py-1 text-sm"
+                        >
+                          <span>{skill}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveDesiredSkill(skill)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            
+                          </button>
+                        </Badge>
+                      ))
+                    )}
+                  </div>
                 </div>
               </section>
 
+
+              {/* MEMBERSHIP DETAILS */}
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Membership Details</h2>
 
@@ -555,95 +760,6 @@ export default function ProfilePage() {
                     <p className="mt-1 text-sm text-red-500">{errors.memberType}</p>
                   )}
                 </div>
-
-                <div>
-                  <Label htmlFor="photoUrl">Photo URL (Optional)</Label>
-                  <Input
-                    id="photoUrl"
-                    name="photoUrl"
-                    placeholder="Paste photo URL"
-                    value={formData.photoUrl}
-                    onChange={handleChange}
-                  />
-                </div>
-              </section>
-
-              <section className="space-y-4">
-                <h2 className="text-lg font-semibold">My Skills</h2>
-
-                <div className="flex gap-2">
-                  <Input
-                    value={skillInput}
-                    onChange={(e) => setSkillInput(e.target.value)}
-                    onKeyDown={handleSkillKeyDown}
-                    placeholder="Enter a skill"
-                  />
-                  <Button type="button" onClick={handleAddSkill}>
-                    Add
-                  </Button>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {skills.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No skills added yet.</p>
-                  ) : (
-                    skills.map((skill) => (
-                      <Badge
-                        key={skill}
-                        variant="secondary"
-                        className="flex items-center gap-2 px-3 py-1 text-sm"
-                      >
-                        <span>{skill}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveSkill(skill)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          ×
-                        </button>
-                      </Badge>
-                    ))
-                  )}
-                </div>
-              </section>
-
-              <section className="space-y-4">
-                <h2 className="text-lg font-semibold">Desired Skills in a Match</h2>
-
-                <div className="flex gap-2">
-                  <Input
-                    value={desiredSkillInput}
-                    onChange={(e) => setDesiredSkillInput(e.target.value)}
-                    onKeyDown={handleDesiredSkillKeyDown}
-                    placeholder="Enter a desired skill"
-                  />
-                  <Button type="button" onClick={handleAddDesiredSkill}>
-                    Add
-                  </Button>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {desiredSkills.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No desired skills added yet.</p>
-                  ) : (
-                    desiredSkills.map((skill) => (
-                      <Badge
-                        key={skill}
-                        variant="secondary"
-                        className="flex items-center gap-2 px-3 py-1 text-sm"
-                      >
-                        <span>{skill}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveDesiredSkill(skill)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          ×
-                        </button>
-                      </Badge>
-                    ))
-                  )}
-                </div>
               </section>
 
               {saveMessage && (
@@ -653,6 +769,7 @@ export default function ProfilePage() {
               <Button type="submit" className="mt-2 w-full">
                 Save Profile
               </Button>
+
             </form>
           </CardContent>
         </Card>
