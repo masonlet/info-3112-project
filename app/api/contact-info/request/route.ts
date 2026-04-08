@@ -1,19 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { decideContactVisibility } from "@/lib/contact-permissions";
+import {
+  normalizeMemberType,
+  decideContactVisibility
+} from "@/lib/contact-permissions";
 
 type RequestPayload = {
   targetUserId?: string;
 };
-
-type MemberType = "Free" | "Paid" | "Staff";
-
-function normalizeMemberType(memberType: string): MemberType {
-  if (memberType === "Paid" || memberType === "Staff") {
-    return memberType;
-  }
-  return "Free";
-}
 
 export async function POST(req: Request) {
   const supabase = await createClient();

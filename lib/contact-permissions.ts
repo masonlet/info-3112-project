@@ -1,4 +1,10 @@
-type MemberType = "Free" | "Paid" | "Staff";
+export type MemberType = "Free" | "Paid" | "Staff";
+
+export function normalizeMemberType(memberType: string): MemberType {
+  if (memberType === "Paid" || memberType === "Staff")
+    return memberType;
+  return "Free";
+}
 
 export type ContactVisibilityDecision = {
   allowed: boolean;
