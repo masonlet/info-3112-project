@@ -90,6 +90,7 @@ export default function MembershipPage() {
       setSuccess("Payment successful. You are now a Paid member.");
     } catch {
       setError("Something went wrong. Please try again.");
+      setPendingPaidPlan(false);
     } finally {
       setSubmitting(null);
     }
