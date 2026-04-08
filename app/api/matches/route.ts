@@ -30,9 +30,7 @@ export async function GET() {
     );
   }
 
-  const hasPaidAccess = currentProfile.member_type === "Paid";
-
-  if (!hasPaidAccess) {
+  if (currentProfile.member_type === "Free") {
     return NextResponse.json(
       { error: "Upgrade to a paid membership to view matches." },
       { status: 403 }
