@@ -400,21 +400,10 @@ export default function ProfilePage() {
                     label="Preferred Contact Method"
                     value={submittedProfile.preferredContactMethod || "Not provided"}
                   />
-                </div>
-                <div className="rounded-md border bg-background px-3 py-3">
-                  <label htmlFor="showContactInfo" className="flex items-start gap-3 text-sm">
-                    <input
-                      id="showContactInfo"
-                      name="showContactInfo"
-                      type="checkbox"
-                      checked={formData.showContactInfo}
-                      onChange={handleChange}
-                      className="mt-0.5 h-4 w-4"
-                    />
-                    <span>
-                      Allow eligible members to request and view my contact identifier.
-                    </span>
-                  </label>
+                  <SummaryItem
+                    label="Contact Visibility"
+                    value={submittedProfile.showContactInfo ? "Visible to eligible members" : "Hidden"}
+                  />
                 </div>
               </section>
 
@@ -424,10 +413,6 @@ export default function ProfilePage() {
                   <SummaryItem
                     label="Desired Gender"
                     value={submittedProfile.desiredGender || "Not provided"}
-                  />
-                  <SummaryItem
-                    label="Contact Visibility"
-                    value={submittedProfile.showContactInfo ? "Visible to eligible members" : "Hidden"}
                   />
                 </div>
 
@@ -715,6 +700,22 @@ export default function ProfilePage() {
                       {errors.preferredContactMethod}
                     </p>
                   )}
+                </div>
+
+                <div className="rounded-md border bg-background px-3 py-3">
+                  <label htmlFor="showContactInfo" className="flex items-start gap-3 text-sm">
+                    <input
+                      id="showContactInfo"
+                      name="showContactInfo"
+                      type="checkbox"
+                      checked={formData.showContactInfo}
+                      onChange={handleChange}
+                      className="mt-0.5 h-4 w-4"
+                    />
+                    <span>
+                      Allow eligible members to request and view my contact identifier.
+                    </span>
+                  </label>
                 </div>
               </section>
 
