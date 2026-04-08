@@ -234,7 +234,7 @@ export default function ProfilePage() {
       desired_gender: formData.desiredGender,
       desired_skills: desiredSkills,
 
-      member_type: formData.memberType,
+      member_type: nextMemberType,
       is_paid: nextIsPaid,
 
       updated_at: new Date().toISOString(),
