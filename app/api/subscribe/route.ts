@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-export async function POST() {
+export async function POST(req: Request) {
   const supabase = await createClient();
   const updatedAt = new Date().toISOString();
 
@@ -17,11 +17,20 @@ export async function POST() {
     );
   }
 
+  const { plan } = (await req.json()) as { plan: string };
+
+  if (!plan) return NextResponse.json(
+    { error: "Plan is required." },
+    { status: 400 }
+  );
+
+  const is_paid = plan === "Paid";
+
   const { error: subscribeError } = await supabase
     .from("profiles")
     .update({
-      is_paid: true,
-      member_type: "Paid",
+      is_paid,
+      member_type: plan,
       updated_at: updatedAt,
     })
     .eq("user_id", user.id);
@@ -36,7 +45,7 @@ export async function POST() {
 
   return NextResponse.json({
     success: true,
-    is_paid: true,
-    member_type: "Paid",
+    is_paid,
+    member_type: plan,
   });
 }

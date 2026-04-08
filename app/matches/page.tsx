@@ -79,6 +79,12 @@ export default function MatchesPage() {
     }
 
     loadMatches();
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") loadMatches();
+    }
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
   if (loading) {

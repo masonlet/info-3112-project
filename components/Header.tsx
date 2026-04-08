@@ -14,6 +14,7 @@ const guestLinks = [
 
 const memberLinks = [
   { href: "/", label: "Home" },
+  { href: "/membership", label: "Membership" },
   { href: "/matches", label: "Matches" },
   { href: "/profile", label: "Profile" },
   { href: "/settings", label: "Settings" },
