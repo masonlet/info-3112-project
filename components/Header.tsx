@@ -20,6 +20,13 @@ const memberLinks = [
   { href: "/settings", label: "Settings" },
 ];
 
+const pmLinks = [
+  { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/users/", label: "Users" },
+  { href: "/settings/", label: "Settings" },
+];
+
 const Logo = () => (
   <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
     <Heart className="w-5 h-5 text-rose-500" />
@@ -29,21 +36,42 @@ const Logo = () => (
 
 const supabase = createClient();
 
+function getIsPM(profile: { member_type?: string; role?: string } | null): boolean {
+  return profile?.member_type === "Product Manager (Demo)"
+    || profile?.role === "product_manager"
+    || profile?.role === "owner"
+    || false;
+}
+
+async function fetchIsPM(userId: string): Promise<boolean> {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("member_type, role")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return getIsPM(profile);
+}
+
 export default function Header() {
-  const [loading, setLoading] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [loading, setLoading]       = useState(true);
+  const [menuOpen, setMenuOpen]     = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isPM, setIsPM]             = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      if (user) setIsPM(await fetchIsPM(user.id));
       setIsLoggedIn(!!user);
       setLoading(false);
     };
 
     loadUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const user = session?.user;
+      if (user) setIsPM(await fetchIsPM(user.id));
+      else setIsPM(false);
       setIsLoggedIn(!!session?.user);
       setLoading(false);
     });
@@ -59,7 +87,7 @@ export default function Header() {
     </header>
   );
 
-  const navLinks = isLoggedIn ? memberLinks : guestLinks;
+  const navLinks = !isLoggedIn ? guestLinks : isPM ? pmLinks : memberLinks;
 
   return (
     <>
