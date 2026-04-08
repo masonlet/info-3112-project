@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
   const { data: ownerProfile, error: ownerError } = await supabase
     .from("profiles")
-    .select("preferred_contact_method, contact_identifier, show_contact_info, email")
+    .select("preferred_contact_method, show_contact_info, email, phone, discord, linkedin")
     .eq("user_id", targetUserId)
     .maybeSingle();
 
@@ -64,21 +64,22 @@ export async function POST(req: Request) {
     );
   }
 
-  const ownerContactMethod = ownerProfile.preferred_contact_method?.trim() ?? "";
-  const ownerRawIdentifier = ownerProfile.contact_identifier?.trim() ?? "";
-  const ownerEmail = ownerProfile.email?.trim() ?? "";
-  const usesEmailMethod = ownerContactMethod === "Email";
-  const placeholderEmailIdentifier = /^email$/i.test(ownerRawIdentifier);
-  const effectiveOwnerIdentifier =
-    usesEmailMethod && (!ownerRawIdentifier || placeholderEmailIdentifier)
-      ? ownerEmail
-      : ownerRawIdentifier;
+  const contactMethod = ownerProfile.preferred_contact_method?.trim() ?? "";
+  const contactIdentifier = (() => {
+    switch(contactMethod) {
+      case "Email": return ownerProfile.email?.trim() ?? "";
+      case "Phone": return ownerProfile.phone?.trim() ?? "";
+      case "Discord": return ownerProfile.discord?.trim() ?? "";
+      case "LinkedIn": return ownerProfile.linkedin?.trim() ?? "";
+      default: return "";
+    }
+  })();
 
   const decision = decideContactVisibility({
     viewerMemberType: normalizeMemberType(viewerProfile.member_type ?? "Free"),
     ownerShowContactInfo: ownerProfile.show_contact_info ?? false,
-    ownerPreferredContactMethod: ownerContactMethod || null,
-    ownerContactIdentifier: effectiveOwnerIdentifier || null,
+    ownerPreferredContactMethod: contactMethod || null,
+    ownerContactIdentifier: contactIdentifier || null,
   });
 
   if (!decision.allowed) {
@@ -87,9 +88,6 @@ export async function POST(req: Request) {
       { status: 403 }
     );
   }
-
-  const contactMethod = ownerContactMethod;
-  const contactIdentifier = effectiveOwnerIdentifier;
 
   const { error: logError } = await supabase.from("contact_info_exposures").insert({
     viewer_user_id: user.id,
