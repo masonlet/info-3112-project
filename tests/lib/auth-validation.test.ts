@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { validateEmail, validatePassword } from "@/lib/auth-validation";
+import {
+  validateEmail,
+  validatePassword,
+  validateContactVisibility,
+} from "@/lib/auth-validation";
 
 describe("auth-validation", () => {
   describe("validateEmail", () => {
@@ -31,6 +35,22 @@ describe("auth-validation", () => {
 
     it("accepts valid password", () => {
       expect(validatePassword("Abcdef1")).toBeNull();
+    });
+  });
+
+  describe("validateContactVisibility", () => {
+    it("returns error when visibility is on but identifier is blank", () => {
+      expect(validateContactVisibility(true, "   ")).toBe(
+        "You must provide a preferred contact method when contact information is shown."
+      );
+    });
+
+    it("allows blank identifier when visibility is off", () => {
+      expect(validateContactVisibility(false, "")).toBeNull();
+    });
+
+    it("allows visible contact when identifier is provided", () => {
+      expect(validateContactVisibility(true, "user#1234")).toBeNull();
     });
   });
 });

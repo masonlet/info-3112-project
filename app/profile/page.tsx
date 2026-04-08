@@ -8,7 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormFields } from "@/hooks/useFormFields";
-import { validateEmail } from "@/lib/auth-validation";
+import {
+  validateContactVisibility,
+  validateEmail,
+} from "@/lib/auth-validation";
+import { getDefaultContactVisibility } from "@/lib/contact-permissions";
 
 type ProfileFormData = {
   salutation: string;
@@ -24,10 +28,11 @@ type ProfileFormData = {
   discord: string;
   linkedin: string;
   preferredContactMethod: string;
-  
-  memberType: string;
+  showContactInfo: boolean;
   
   desiredGender: string;
+
+  memberType: string;
 };
 
 export default function ProfilePage() {
@@ -49,10 +54,11 @@ export default function ProfilePage() {
     discord: "",
     linkedin: "",
     preferredContactMethod: "",
-    
-    memberType: "",
+    showContactInfo: getDefaultContactVisibility(),
     
     desiredGender: "",
+
+    memberType: "",
   });
 
   const supabase = useMemo(() => createClient(), []);
@@ -79,21 +85,25 @@ export default function ProfilePage() {
       if (emailErr) newErrors.email = emailErr;
     }
 
-    if (formData.preferredContactMethod === "Email" && !formData.email.trim()) {
+    if (formData.preferredContactMethod === "Email" && !formData.email.trim())
       newErrors.email = "Email is required when it is the preferred contact method.";
-    }
 
-    if (formData.preferredContactMethod === "Phone" && !formData.phone.trim()) {
+    if (formData.preferredContactMethod === "Phone" && !formData.phone.trim())
       newErrors.phone = "Phone number is required when it is the preferred contact method.";
-    }
 
-    if (formData.preferredContactMethod === "Discord" && !formData.discord.trim()) {
+    if (formData.preferredContactMethod === "Discord" && !formData.discord.trim())
       newErrors.discord = "Discord username is required when it is the preferred contact method.";
-    }
 
-    if (formData.preferredContactMethod === "LinkedIn" && !formData.linkedin.trim()) {
+    if (formData.preferredContactMethod === "LinkedIn" && !formData.linkedin.trim())
       newErrors.linkedin = "LinkedIn profile is required when it is the preferred contact method.";
-    }
+
+    const contactVisibilityError = validateContactVisibility(
+      formData.showContactInfo,
+      formData.preferredContactMethod,
+    );
+
+    if (contactVisibilityError)
+      newErrors.preferredContactMethod = contactVisibilityError;
 
     if (!formData.memberType)
       newErrors.memberType = "Member type is required.";
@@ -141,10 +151,11 @@ export default function ProfilePage() {
         discord: data.discord ?? "",
         linkedin: data.linkedin ?? "",
         preferredContactMethod: data.preferred_contact_method ?? "",
-
-        memberType: data.member_type ?? "",
+        showContactInfo: data.show_contact_info ?? getDefaultContactVisibility(),
 
         desiredGender: data.desired_gender ?? "",
+
+        memberType: data.member_type ?? "",
       };
 
       setFormData(loadedProfile);
@@ -196,19 +207,21 @@ export default function ProfilePage() {
       nickname: formData.nickname || null,
       date_of_birth: formData.dateOfBirth,
       gender: formData.gender,
+      photo_url: formData.photoUrl || null,
+      skills,
+
       email: formData.email,
       phone: formData.phone || null,
       discord: formData.discord || null,
       linkedin: formData.linkedin || null,
       preferred_contact_method: formData.preferredContactMethod,
-
-      member_type: formData.memberType,
-      photo_url: formData.photoUrl || null,
+      show_contact_info: formData.showContactInfo,
 
       desired_gender: formData.desiredGender,
-
-      skills,
       desired_skills: desiredSkills,
+
+      member_type: formData.memberType,
+
       updated_at: new Date().toISOString(),
     };
 
@@ -388,6 +401,21 @@ export default function ProfilePage() {
                     value={submittedProfile.preferredContactMethod || "Not provided"}
                   />
                 </div>
+                <div className="rounded-md border bg-background px-3 py-3">
+                  <label htmlFor="showContactInfo" className="flex items-start gap-3 text-sm">
+                    <input
+                      id="showContactInfo"
+                      name="showContactInfo"
+                      type="checkbox"
+                      checked={formData.showContactInfo}
+                      onChange={handleChange}
+                      className="mt-0.5 h-4 w-4"
+                    />
+                    <span>
+                      Allow eligible members to request and view my contact identifier.
+                    </span>
+                  </label>
+                </div>
               </section>
 
               <section className="space-y-3">
@@ -396,6 +424,10 @@ export default function ProfilePage() {
                   <SummaryItem
                     label="Desired Gender"
                     value={submittedProfile.desiredGender || "Not provided"}
+                  />
+                  <SummaryItem
+                    label="Contact Visibility"
+                    value={submittedProfile.showContactInfo ? "Visible to eligible members" : "Hidden"}
                   />
                 </div>
 
@@ -600,7 +632,6 @@ export default function ProfilePage() {
                 </div>
               </section>
 
-
               {/* CONTACT INFORMATION */}
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Contact Information</h2>
@@ -687,7 +718,6 @@ export default function ProfilePage() {
                 </div>
               </section>
 
-
               {/* DESIRED PARTNER */}
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Desired Partner</h2>
@@ -742,7 +772,7 @@ export default function ProfilePage() {
                             onClick={() => handleRemoveDesiredSkill(skill)}
                             className="text-red-500 hover:text-red-700"
                           >
-                            
+                            x
                           </button>
                         </Badge>
                       ))
@@ -750,7 +780,6 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </section>
-
 
               {/* MEMBERSHIP DETAILS */}
               <section className="space-y-4">
@@ -782,7 +811,6 @@ export default function ProfilePage() {
               <Button type="submit" className="mt-2 w-full">
                 Save Profile
               </Button>
-
             </form>
           </CardContent>
         </Card>

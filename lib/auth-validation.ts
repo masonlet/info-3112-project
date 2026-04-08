@@ -11,3 +11,13 @@ export function validatePassword(password: string): string | null {
     return "Password needs uppercase, lowercase, and a number.";
   return null;
 }
+
+export function validateContactVisibility(
+  showContactInfo: boolean,
+  preferredContactMethod: string
+): string | null {
+  if (showContactInfo && !preferredContactMethod.trim()) {
+    return "You must provide a preferred contact method when contact information is shown.";
+  }
+  return null;
+}
