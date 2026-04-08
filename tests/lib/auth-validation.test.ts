@@ -41,7 +41,7 @@ describe("auth-validation", () => {
   describe("validateContactVisibility", () => {
     it("returns error when visibility is on but identifier is blank", () => {
       expect(validateContactVisibility(true, "   ")).toBe(
-        "You must provide a contact identifier before enabling visibility."
+        "You must provide a preferred contact method when contact information is shown."
       );
     });
 

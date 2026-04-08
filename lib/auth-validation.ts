@@ -14,10 +14,10 @@ export function validatePassword(password: string): string | null {
 
 export function validateContactVisibility(
   showContactInfo: boolean,
-  contactIdentifier: string
+  preferredContactMethod: string
 ): string | null {
-  if (showContactInfo && !contactIdentifier.trim()) {
-    return "You must provide a contact identifier before enabling visibility.";
+  if (showContactInfo && !preferredContactMethod.trim()) {
+    return "You must provide a preferred contact method when contact information is shown.";
   }
   return null;
 }
