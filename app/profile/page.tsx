@@ -74,14 +74,9 @@ export default function ProfilePage() {
     if (!formData.dateOfBirth) newErrors.dateOfBirth = "Date of birth is required.";
     if (!formData.gender) newErrors.gender = "Gender is required.";
 
-    const emailErr = validateEmail(formData.email);
-    if (emailErr) newErrors.email = emailErr;
-
-    if (!formData.preferredContactMethod)
-      newErrors.preferredContactMethod = "Preferred contact method is required.";
-
-    if (!formData.preferredContactMethod) {
-      newErrors.preferredContactMethod = "Preferred contact method is required.";
+    if (formData.email.trim()) {
+      const emailErr = validateEmail(formData.email);
+      if (emailErr) newErrors.email = emailErr;
     }
 
     if (formData.preferredContactMethod === "Email" && !formData.email.trim()) {
@@ -170,9 +165,18 @@ export default function ProfilePage() {
     e.preventDefault();
 
     const validationErrors = validateForm();
-    setErrors(validationErrors);
+      setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length > 0) return;
+      if (Object.keys(validationErrors).length > 0) {
+        const firstErrorField = Object.keys(validationErrors)[0];
+        const element = document.querySelector(`[name="${firstErrorField}"]`);
+
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
+        return;
+      }
 
     const {
       data: { user },
@@ -625,6 +629,9 @@ export default function ProfilePage() {
                     value={formData.phone}
                     onChange={handleChange}
                   />
+                  {errors.phone && (
+                    <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
+                  )}
                 </div>
 
                 <div>
@@ -636,6 +643,9 @@ export default function ProfilePage() {
                     value={formData.discord}
                     onChange={handleChange}
                   />
+                  {errors.discord && (
+                    <p className="mt-1 text-sm text-red-500">{errors.discord}</p>
+                  )}
                 </div>
 
                 <div>
@@ -647,6 +657,9 @@ export default function ProfilePage() {
                     value={formData.linkedin}
                     onChange={handleChange}
                   />
+                  {errors.linkedin && (
+                    <p className="mt-1 text-sm text-red-500">{errors.linkedin}</p>
+                  )}
                 </div>
 
                 <div>
