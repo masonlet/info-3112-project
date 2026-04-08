@@ -138,7 +138,14 @@ export default function MembershipPage() {
                   <Button
                     size="sm"
                     disabled={!!submitting || loading}
-                    onClick={() => plan === "Paid" ? setPendingPaidPlan(true) : switchPlan(plan)}
+                    onClick={() => {
+                      if (plan === "Paid") {
+                        setSuccess("");
+                        setPendingPaidPlan(true);
+                      } else {
+                        switchPlan(plan);
+                      }
+                    }}
                   > {submitting === plan ? "Switching..." : "Select"}
                   </Button>
                 )}
