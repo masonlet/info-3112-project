@@ -9,7 +9,6 @@ type Plan = "Free" | "Paid";
 
 type MembershipResponse = {
   success?: boolean;
-  is_paid?: boolean;
   member_type?: string;
   error?: string;
 };

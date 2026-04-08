@@ -26,12 +26,10 @@ export async function POST(req: Request) {
     { status: 400 }
   );
 
-  const is_paid = plan === "Paid";
 
   const { error: subscribeError } = await supabase
     .from("profiles")
     .update({
-      is_paid,
       member_type: plan,
       updated_at: updatedAt,
     })
@@ -47,7 +45,6 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     success: true,
-    is_paid,
     member_type: plan,
   });
 }
