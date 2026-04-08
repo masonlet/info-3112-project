@@ -401,6 +401,21 @@ export default function ProfilePage() {
                     value={submittedProfile.preferredContactMethod || "Not provided"}
                   />
                 </div>
+                <div className="rounded-md border bg-background px-3 py-3">
+                  <label htmlFor="showContactInfo" className="flex items-start gap-3 text-sm">
+                    <input
+                      id="showContactInfo"
+                      name="showContactInfo"
+                      type="checkbox"
+                      checked={formData.showContactInfo}
+                      onChange={handleChange}
+                      className="mt-0.5 h-4 w-4"
+                    />
+                    <span>
+                      Allow eligible members to request and view my contact identifier.
+                    </span>
+                  </label>
+                </div>
               </section>
 
               <section className="space-y-3">
@@ -617,7 +632,6 @@ export default function ProfilePage() {
                 </div>
               </section>
 
-
               {/* CONTACT INFORMATION */}
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Contact Information</h2>
@@ -704,7 +718,6 @@ export default function ProfilePage() {
                 </div>
               </section>
 
-
               {/* DESIRED PARTNER */}
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Desired Partner</h2>
@@ -766,24 +779,7 @@ export default function ProfilePage() {
                     )}
                   </div>
                 </div>
-
-                <div className="rounded-md border bg-background px-3 py-3">
-                  <label htmlFor="showContactInfo" className="flex items-start gap-3 text-sm">
-                    <input
-                      id="showContactInfo"
-                      name="showContactInfo"
-                      type="checkbox"
-                      checked={formData.showContactInfo}
-                      onChange={handleChange}
-                      className="mt-0.5 h-4 w-4"
-                    />
-                    <span>
-                      Allow eligible members to request and view my contact identifier.
-                    </span>
-                  </label>
-                </div>
               </section>
-
 
               {/* MEMBERSHIP DETAILS */}
               <section className="space-y-4">
@@ -815,7 +811,6 @@ export default function ProfilePage() {
               <Button type="submit" className="mt-2 w-full">
                 Save Profile
               </Button>
-
             </form>
           </CardContent>
         </Card>
