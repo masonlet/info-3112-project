@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+const VALID_PLANS = ["Free", "Paid"];
+
 export async function POST(req: Request) {
   const supabase = await createClient();
   const updatedAt = new Date().toISOString();
@@ -19,8 +21,8 @@ export async function POST(req: Request) {
 
   const { plan } = (await req.json()) as { plan: string };
 
-  if (!plan) return NextResponse.json(
-    { error: "Plan is required." },
+  if (!plan || !VALID_PLANS.includes(plan)) return NextResponse.json(
+    { error: "Plan is missing or invalid." },
     { status: 400 }
   );
 
