@@ -69,7 +69,7 @@ export default function MembershipPage() {
   };
 
   const handleFakePayment = async () => {
-    setLoading(true);
+    setSubmitting("Paid");
     setError("");
 
     try {
@@ -91,7 +91,7 @@ export default function MembershipPage() {
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
-      setLoading(false);
+      setSubmitting(null);
     }
   };
 
@@ -157,10 +157,10 @@ export default function MembershipPage() {
               <p className="text-sm font-medium">Complete Payment</p>
               <p className="text-xs text-muted-foreground">Demo payment flow (mock only)</p>
               <div className="flex gap-2">
-                <Button className="flex-1" onClick={handleFakePayment} disabled={loading}>
-                  {loading ? "Processing..." : "Pay with Google"}
+                <Button className="flex-1" onClick={handleFakePayment} disabled={submitting === "Paid"}>
+                  {submitting ? "Processing..." : "Pay with Google"}
                 </Button>
-                <Button variant="outline" className="flex-1" onClick={() => setPendingPaidPlan(false)} disabled={loading}>
+                <Button variant="outline" className="flex-1" onClick={() => setPendingPaidPlan(false)} disabled={submitting === "Paid"}>
                   Cancel
                 </Button>
               </div>
