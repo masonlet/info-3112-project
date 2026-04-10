@@ -1,4 +1,11 @@
-import { describe, it, expect } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  vi
+} from "vitest";
 import {
   calculateAge,
   getZodiacSign,
@@ -18,6 +25,15 @@ const baseProfile = {
   photo_url: null,
   preferred_contact_method: "Email",
 };
+
+beforeEach(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date("2026-01-01"));
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 describe("calculateAge", () => {
   it("returns correct age", () => {
