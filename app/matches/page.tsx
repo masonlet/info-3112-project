@@ -222,17 +222,17 @@ function MatchCard({
               match.score >= 80
                 ? "default"
                 : match.score >= 60
-                ? "secondary"
-                : "outline"
+                  ? "secondary"
+                  : "outline"
             }
           >
             {match.score >= 80
               ? `Excellent Match · ${match.score}%`
               : match.score >= 60
-              ? `Good Match · ${match.score}%`
-              : match.score >= 40
-              ? `Potential Match · ${match.score}%`
-              : `Poor Match · ${match.score}%`}
+                ? `Good Match · ${match.score}%`
+                : match.score >= 40
+                  ? `Potential Match · ${match.score}%`
+                  : `Poor Match · ${match.score}%`}
           </Badge>
         </div>
 
@@ -246,6 +246,19 @@ function MatchCard({
                 {reason}
               </span>
             ))}
+          </div>
+        )}
+
+        {match.skills?.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Skills</p>
+            <div className="flex flex-wrap gap-2">
+              {match.skills.map((skill) => (
+                <Badge key={skill} variant="outline" className="text-xs">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
           </div>
         )}
 

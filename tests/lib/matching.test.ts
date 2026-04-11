@@ -24,6 +24,9 @@ const baseProfile = {
   member_type: "Paid",
   photo_url: null,
   preferred_contact_method: "Email",
+  skills: [],
+  desired_skills: [],
+  desired_gender: null,
 };
 
 beforeEach(() => {
@@ -163,20 +166,33 @@ describe("areZodiacsCompatible", () => {
 
 describe("calculateCompatibilityScore", () => {
   it("returns max score for perfect match", () => {
-    const user1 = { ...baseProfile, date_of_birth: "2000-03-25" };
+    const user1 = {
+      ...baseProfile,
+      date_of_birth: "2000-03-25",
+      skills: ["React", "TypeScript", "Node.js"],
+      desired_skills: ["Python", "Docker"],
+    };
     const user2 = {
       ...baseProfile,
       user_id: "2",
       date_of_birth: "2000-03-25",
       nickname: "nick",
       photo_url: "http://photo.com",
+      skills: ["Python", "Docker"],
+      desired_skills: ["React", "TypeScript", "Node.js"],
     };
     const score = calculateCompatibilityScore(user1, user2);
     expect(score).toBe(100);
   });
 
   it("returns less than 100 for incompatible match", () => {
-    const user1 = { ...baseProfile, date_of_birth: "2000-03-25", preferred_contact_method: "Email" };
+    const user1 = {
+      ...baseProfile,
+      date_of_birth: "2000-03-25",
+      preferred_contact_method: "Email",
+      skills: [],
+      desired_skills: [],
+    };
     const user2 = {
       ...baseProfile,
       user_id: "2",
@@ -184,27 +200,29 @@ describe("calculateCompatibilityScore", () => {
       preferred_contact_method: "Phone",
       nickname: null,
       photo_url: null,
+      skills: [],
+      desired_skills: [],
     };
     const score = calculateCompatibilityScore(user1, user2);
     expect(score).toBeGreaterThanOrEqual(0);
     expect(score).toBeLessThan(100);
   });
 
-  it("same contact method adds 25 points", () => {
-    const user1 = { ...baseProfile, preferred_contact_method: "Email" };
-    const user2 = { ...baseProfile, user_id: "2", preferred_contact_method: "Email" };
+  it("same contact method adds 20 points", () => {
+    const user1 = { ...baseProfile, preferred_contact_method: "Email", skills: [], desired_skills: [] };
+    const user2 = { ...baseProfile, user_id: "2", preferred_contact_method: "Email", skills: [], desired_skills: [] };
     const score1 = calculateCompatibilityScore(user1, user2);
 
-    const user3 = { ...baseProfile, user_id: "3", preferred_contact_method: "Phone" };
+    const user3 = { ...baseProfile, user_id: "3", preferred_contact_method: "Phone", skills: [], desired_skills: [] };
     const score2 = calculateCompatibilityScore(user1, user3);
 
-    expect(score1 - score2).toBe(25);
+    expect(score1 - score2).toBe(20);
   });
 
-  it("same zodiac sign adds 30 points over incompatible", () => {
-    const user1 = { ...baseProfile, date_of_birth: "2000-03-25" };
-    const user2 = { ...baseProfile, user_id: "2", date_of_birth: "2000-03-25" };
-    const user3 = { ...baseProfile, user_id: "3", date_of_birth: "2000-06-15" };
+  it("same zodiac sign adds 25 points over incompatible", () => {
+    const user1 = { ...baseProfile, date_of_birth: "2000-03-25", skills: [], desired_skills: [] };
+    const user2 = { ...baseProfile, user_id: "2", date_of_birth: "2000-03-25", skills: [], desired_skills: [] };
+    const user3 = { ...baseProfile, user_id: "3", date_of_birth: "2000-06-15", skills: [], desired_skills: [] };
 
     const score1 = calculateCompatibilityScore(user1, user2);
     const score2 = calculateCompatibilityScore(user1, user3);
@@ -212,29 +230,21 @@ describe("calculateCompatibilityScore", () => {
     expect(score1).toBeGreaterThan(score2);
   });
 
- it("compatible zodiac adds 15 points not 30", () => {
-    const user1 = { ...baseProfile, date_of_birth: "2000-03-25" }; 
-    const compatible = {
-      ...baseProfile,
-      user_id: "2",
-      date_of_birth: "2000-05-25",
-    };
-    const sameSign = {
-      ...baseProfile,
-      user_id: "3",
-      date_of_birth: "2000-04-10", 
-    };
+  it("compatible zodiac adds 12 points not 25", () => {
+    const user1 = { ...baseProfile, date_of_birth: "2000-03-25", skills: [], desired_skills: [] };
+    const compatible = { ...baseProfile, user_id: "2", date_of_birth: "2000-05-25", skills: [], desired_skills: [] };
+    const sameSign = { ...baseProfile, user_id: "3", date_of_birth: "2000-04-10", skills: [], desired_skills: [] };
 
     const compatibleScore = calculateCompatibilityScore(user1, compatible);
     const sameSignScore = calculateCompatibilityScore(user1, sameSign);
 
-    expect(sameSignScore - compatibleScore).toBe(15);
+    expect(sameSignScore - compatibleScore).toBe(13);
   });
 
   it("photo adds 5 points", () => {
-    const user1 = { ...baseProfile };
-    const withPhoto = { ...baseProfile, user_id: "2", photo_url: "http://photo.com" };
-    const withoutPhoto = { ...baseProfile, user_id: "3", photo_url: null };
+    const user1 = { ...baseProfile, skills: [], desired_skills: [] };
+    const withPhoto = { ...baseProfile, user_id: "2", photo_url: "http://photo.com", skills: [], desired_skills: [] };
+    const withoutPhoto = { ...baseProfile, user_id: "3", photo_url: null, skills: [], desired_skills: [] };
 
     const score1 = calculateCompatibilityScore(user1, withPhoto);
     const score2 = calculateCompatibilityScore(user1, withoutPhoto);
@@ -243,9 +253,9 @@ describe("calculateCompatibilityScore", () => {
   });
 
   it("nickname adds 5 points", () => {
-    const user1 = { ...baseProfile };
-    const withNickname = { ...baseProfile, user_id: "2", nickname: "nick" };
-    const withoutNickname = { ...baseProfile, user_id: "3", nickname: null };
+    const user1 = { ...baseProfile, skills: [], desired_skills: [] };
+    const withNickname = { ...baseProfile, user_id: "2", nickname: "nick", skills: [], desired_skills: [] };
+    const withoutNickname = { ...baseProfile, user_id: "3", nickname: null, skills: [], desired_skills: [] };
 
     const score1 = calculateCompatibilityScore(user1, withNickname);
     const score2 = calculateCompatibilityScore(user1, withoutNickname);
@@ -254,12 +264,34 @@ describe("calculateCompatibilityScore", () => {
   });
 
   it("age diff over 12 years gives 0 age points", () => {
-    const user1 = { ...baseProfile, date_of_birth: "2000-01-01" };
-    const user2 = { ...baseProfile, user_id: "2", date_of_birth: "1985-01-01" };
+    const user1 = { ...baseProfile, date_of_birth: "2000-01-01", skills: [], desired_skills: [] };
+    const user2 = { ...baseProfile, user_id: "2", date_of_birth: "1985-01-01", skills: [], desired_skills: [] };
 
     const score = calculateCompatibilityScore(user1, user2);
     const scoreWithSameAge = calculateCompatibilityScore(user1, { ...user2, date_of_birth: "2000-01-01" });
 
-    expect(scoreWithSameAge - score).toBe(35);
+    expect(scoreWithSameAge - score).toBe(25);
+  });
+
+  it("1 skill overlap adds 7 points", () => {
+    const user1 = { ...baseProfile, skills: ["React"], desired_skills: ["Python"] };
+    const user2 = { ...baseProfile, user_id: "2", skills: ["Python"], desired_skills: [] };
+    const user3 = { ...baseProfile, user_id: "3", skills: [], desired_skills: [] };
+
+    const score1 = calculateCompatibilityScore(user1, user2);
+    const score2 = calculateCompatibilityScore(user1, user3);
+
+    expect(score1 - score2).toBe(7);
+  });
+
+  it("3 or more skill overlaps adds 20 points", () => {
+    const user1 = { ...baseProfile, skills: ["React", "Node.js"], desired_skills: ["Python", "Docker"] };
+    const user2 = { ...baseProfile, user_id: "2", skills: ["Python", "Docker"], desired_skills: ["React", "Node.js"] };
+    const user3 = { ...baseProfile, user_id: "3", skills: [], desired_skills: [] };
+
+    const score1 = calculateCompatibilityScore(user1, user2);
+    const score2 = calculateCompatibilityScore(user1, user3);
+
+    expect(score1 - score2).toBe(20);
   });
 });
