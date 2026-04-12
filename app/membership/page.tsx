@@ -4,8 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-type Plan = "Free" | "Paid" | "Product Manager";
+import { MemberType } from "@/lib/roles";
 
 type MembershipResponse = {
   success?: boolean;
@@ -13,7 +12,7 @@ type MembershipResponse = {
   error?: string;
 };
 
-const plans: { plan: Plan; label: string; description: string }[] = [
+const plans: { plan: MemberType; label: string; description: string }[] = [
   {
     plan: "Free",
     label: "Free",
@@ -33,9 +32,9 @@ const plans: { plan: Plan; label: string; description: string }[] = [
 
 export default function MembershipPage() {
   const supabase = useMemo(() => createClient(), []);
-  const [currentPlan, setCurrentPlan] = useState<Plan | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<MemberType | null>(null);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState<Plan | null>(null);
+  const [submitting, setSubmitting] = useState<MemberType | null>(null);
   const [pendingPaidPlan, setPendingPaidPlan] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -49,13 +48,13 @@ export default function MembershipPage() {
         .select("member_type")
         .eq("user_id", user.id)
         .maybeSingle();
-      setCurrentPlan((data?.member_type as Plan) ?? "Free");
+      setCurrentPlan((data?.member_type as MemberType) ?? "Free");
       setLoading(false);
     };
     load();
   }, [supabase]);
 
-  const switchPlan = async (plan: Plan) => {
+  const switchPlan = async (plan: MemberType) => {
     setError("");
     setSuccess("");
     setSubmitting(plan);
