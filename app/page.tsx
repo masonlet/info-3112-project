@@ -1,7 +1,20 @@
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-muted/30">
-      <h1 className="text-2xl font-semibold">Info-3112 Group Project</h1>
-    </div>
-  );
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { isPMType } from "@/lib/roles";
+
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/register");
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role, member_type")
+    .eq("user_id", user.id)
+    .single();
+
+  if (isPMType(profile?.member_type ?? "", profile?.role ?? ""))
+    redirect("/dashboard");
+
+  redirect("/matches");
 }

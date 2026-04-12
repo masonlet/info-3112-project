@@ -7,13 +7,11 @@ import { Menu, X, Heart } from "lucide-react";
 import { useUser } from "@/lib/context/user-context";
 
 const guestLinks = [
-  { href: "/", label: "Home" },
   { href: "/login", label: "Sign In" },
   { href: "/register", label: "Sign Up" },
 ];
 
 const memberLinks = [
-  { href: "/", label: "Home" },
   { href: "/matches", label: "Matches" },
   { href: "/profile", label: "Profile" },
   { href: "/membership", label: "Membership" },
@@ -21,9 +19,8 @@ const memberLinks = [
 ];
 
 const pmLinks = [
-  { href: "/", label: "Home" },
-  { href: "/users/", label: "Users" },  
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/users/", label: "Users" },
   { href: "/membership", label: "Membership" },
   { href: "/settings/", label: "Settings" },
 ];
