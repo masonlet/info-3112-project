@@ -63,6 +63,7 @@ export default function MatchesPage() {
 
   useEffect(() => {
     async function loadMatches() {
+      setError("");
       setLoading(true);
       const res = await fetch("/api/matches");
       const data = await res.json();
