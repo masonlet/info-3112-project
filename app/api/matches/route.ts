@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { calculateCompatibilityScore, type Profile, type Match } from "@/lib/matching";
+import { isPMType } from "@/lib/roles";
 
 export async function GET() {
   const supabase = await createClient();
@@ -30,11 +31,16 @@ export async function GET() {
     );
   }
 
-  const hasPaidAccess = currentProfile.member_type === "Paid";
-
-  if (!hasPaidAccess) {
+  if (currentProfile.member_type === "Free") {
     return NextResponse.json(
       { error: "Upgrade to a paid membership to view matches." },
+      { status: 403 }
+    );
+  }
+
+  if (isPMType(currentProfile.member_type ?? "", currentProfile.role ?? "")) {
+    return NextResponse.json(
+      { error: "Product managers cannot view matches." },
       { status: 403 }
     );
   }

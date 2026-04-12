@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { useUser } from "@/lib/context/user-context";
 
 const guestLinks = [
   { href: "/", label: "Home" },
@@ -14,10 +14,18 @@ const guestLinks = [
 
 const memberLinks = [
   { href: "/", label: "Home" },
-  { href: "/membership", label: "Membership" },
   { href: "/matches", label: "Matches" },
   { href: "/profile", label: "Profile" },
+  { href: "/membership", label: "Membership" },
   { href: "/settings", label: "Settings" },
+];
+
+const pmLinks = [
+  { href: "/", label: "Home" },
+  { href: "/users/", label: "Users" },  
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/membership", label: "Membership" },
+  { href: "/settings/", label: "Settings" },
 ];
 
 const Logo = () => (
@@ -27,29 +35,9 @@ const Logo = () => (
   </Link>
 );
 
-const supabase = createClient();
-
 export default function Header() {
-  const [loading, setLoading] = useState(true);
+  const { isLoggedIn, isPM, loading } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setIsLoggedIn(!!user);
-      setLoading(false);
-    };
-
-    loadUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session?.user);
-      setLoading(false);
-    });
-
-    return () => { subscription.unsubscribe(); };
-  }, []);
 
   if (loading) return (
     <header className="relative z-50 border-b bg-background px-4 py-3">
@@ -59,7 +47,7 @@ export default function Header() {
     </header>
   );
 
-  const navLinks = isLoggedIn ? memberLinks : guestLinks;
+  const navLinks = !isLoggedIn ? guestLinks : isPM ? pmLinks : memberLinks;
 
   return (
     <>

@@ -1,18 +1,17 @@
-export type MemberType = "Free" | "Paid" | "Staff";
+import { MemberType } from "@/lib/roles";
 
 export function normalizeMemberType(memberType: string): MemberType {
-  if (memberType === "Paid" || memberType === "Staff")
+  if (memberType === "Paid" || memberType === "Product Manager")
     return memberType;
   return "Free";
 }
 
 export type ContactVisibilityDecision = {
   allowed: boolean;
-  reason:
-    | "viewer_not_permitted"
-    | "owner_not_opted_in"
-    | "owner_missing_contact_details"
-    | "allowed";
+  reason: | "viewer_not_permitted"
+          | "owner_not_opted_in"
+          | "owner_missing_contact_details"
+          | "allowed";
 };
 
 type ContactPermissionInput = {
@@ -22,25 +21,22 @@ type ContactPermissionInput = {
   ownerContactIdentifier: string | null;
 };
 
-export function getDefaultContactVisibility(): boolean {
-  // Option A policy: visibility is opt-in for everyone.
+// Option A policy: visibility is opt-in for everyone.
+export function getDefaultContactVisibility(): boolean { 
   return false;
 }
 
 export function decideContactVisibility(
   input: ContactPermissionInput
 ): ContactVisibilityDecision {
-  if (input.viewerMemberType !== "Paid" && input.viewerMemberType !== "Staff") {
+  if (input.viewerMemberType !== "Paid")
     return { allowed: false, reason: "viewer_not_permitted" };
-  }
 
-  if (!input.ownerShowContactInfo) {
+  if (!input.ownerShowContactInfo)
     return { allowed: false, reason: "owner_not_opted_in" };
-  }
 
-  if (!input.ownerPreferredContactMethod || !input.ownerContactIdentifier?.trim()) {
+  if (!input.ownerPreferredContactMethod || !input.ownerContactIdentifier?.trim())
     return { allowed: false, reason: "owner_missing_contact_details" };
-  }
 
   return { allowed: true, reason: "allowed" };
 }
