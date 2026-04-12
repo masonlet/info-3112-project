@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MemberType } from "@/lib/roles";
+import { useUser } from "@/lib/context/user-context";
 
 type MembershipResponse = {
   success?: boolean;
@@ -38,6 +39,7 @@ export default function MembershipPage() {
   const [pendingPaidPlan, setPendingPaidPlan] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const { refresh } = useUser();
 
   useEffect(() => {
     const load = async () => {
@@ -73,6 +75,7 @@ export default function MembershipPage() {
 
       setCurrentPlan(plan);
       setSuccess(`Switched to ${plan}.`);
+      await refresh();
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -100,6 +103,7 @@ export default function MembershipPage() {
       setCurrentPlan("Paid");
       setPendingPaidPlan(false);
       setSuccess("Payment successful. You are now a Paid member.");
+      await refresh();
     } catch {
       setError("Something went wrong. Please try again.");
       setPendingPaidPlan(false);

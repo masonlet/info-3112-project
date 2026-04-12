@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { isPMType } from "@/lib/roles";
+import { useUser } from "@/lib/context/user-context";
 
 const guestLinks = [
   { href: "/", label: "Home" },
@@ -36,43 +35,9 @@ const Logo = () => (
   </Link>
 );
 
-const supabase = createClient();
-
-async function fetchIsPM(userId: string): Promise<boolean> {
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("member_type, role")
-    .eq("user_id", userId)
-    .maybeSingle();
-  return isPMType(profile?.member_type ?? "", profile?.role ?? "");
-}
-
 export default function Header() {
-  const [loading, setLoading]       = useState(true);
-  const [menuOpen, setMenuOpen]     = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isPM, setIsPM]             = useState(false);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) setIsPM(await fetchIsPM(user.id));
-      setIsLoggedIn(!!user);
-      setLoading(false);
-    };
-
-    loadUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const user = session?.user;
-      if (user) setIsPM(await fetchIsPM(user.id));
-      else setIsPM(false);
-      setIsLoggedIn(!!session?.user);
-      setLoading(false);
-    });
-
-    return () => { subscription.unsubscribe(); };
-  }, []);
+  const { isLoggedIn, isPM, loading } = useUser();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   if (loading) return (
     <header className="relative z-50 border-b bg-background px-4 py-3">
