@@ -31,8 +31,6 @@ type ProfileFormData = {
   showContactInfo: boolean;
   
   desiredGender: string;
-
-  memberType: string;
 };
 
 export default function ProfilePage() {
@@ -57,8 +55,6 @@ export default function ProfilePage() {
     showContactInfo: getDefaultContactVisibility(),
     
     desiredGender: "",
-
-    memberType: "",
   });
 
   const supabase = useMemo(() => createClient(), []);
@@ -104,9 +100,6 @@ export default function ProfilePage() {
 
     if (contactVisibilityError)
       newErrors.preferredContactMethod = contactVisibilityError;
-
-    if (!formData.memberType)
-      newErrors.memberType = "Member type is required.";
 
     return newErrors;
   };
@@ -154,8 +147,6 @@ export default function ProfilePage() {
         showContactInfo: data.show_contact_info ?? getDefaultContactVisibility(),
 
         desiredGender: data.desired_gender ?? "",
-
-        memberType: data.member_type ?? "",
       };
 
       setFormData(loadedProfile);
@@ -219,8 +210,6 @@ export default function ProfilePage() {
 
       desired_gender: formData.desiredGender,
       desired_skills: desiredSkills,
-
-      member_type: formData.memberType,
 
       updated_at: new Date().toISOString(),
     };
@@ -431,13 +420,6 @@ export default function ProfilePage() {
                       ))
                     )}
                   </div>
-                </div>
-              </section>
-
-              <section className="space-y-3">
-                <h2 className="text-lg font-semibold">Membership Details</h2>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <SummaryItem label="Member Type" value={submittedProfile.memberType} />
                 </div>
               </section>
 
@@ -779,29 +761,6 @@ export default function ProfilePage() {
                       ))
                     )}
                   </div>
-                </div>
-              </section>
-
-              {/* MEMBERSHIP DETAILS */}
-              <section className="space-y-4">
-                <h2 className="text-lg font-semibold">Membership Details</h2>
-
-                <div>
-                  <Label htmlFor="memberType">Member Type</Label>
-                  <select
-                    id="memberType"
-                    name="memberType"
-                    value={formData.memberType}
-                    onChange={handleChange}
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="">Select member type</option>
-                    <option value="Free">Free</option>
-                    <option value="Paid">Paid</option>
-                  </select>
-                  {errors.memberType && (
-                    <p className="mt-1 text-sm text-red-500">{errors.memberType}</p>
-                  )}
                 </div>
               </section>
 
