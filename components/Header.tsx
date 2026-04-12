@@ -20,7 +20,7 @@ const memberLinks = [
 
 const pmLinks = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/users/", label: "Users" },  
+  { href: "/users/", label: "Users" },
   { href: "/membership", label: "Membership" },
   { href: "/settings/", label: "Settings" },
 ];
