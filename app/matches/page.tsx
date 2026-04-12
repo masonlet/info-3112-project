@@ -7,16 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  type Profile,
   type Match,
-  calculateAge,
-  getZodiacSign,
   areZodiacsCompatible,
 } from "@/lib/matching";
 
 export default function MatchesPage() {
   const [matches, setMatches] = useState<Match[]>([]);
-  const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
+  const [currentProfile, setCurrentProfile] = useState<Match | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [revealedContacts, setRevealedContacts] = useState<
@@ -230,7 +227,7 @@ function MatchCard({
   onRateMatch,
 }: {
   match: Match;
-  currentUser: Profile;
+  currentUser: Match;
   revealedContact?: { contactMethod: string; contactIdentifier: string };
   requestError?: string;
   isRequestPending: boolean;
@@ -241,11 +238,9 @@ function MatchCard({
   isRatingPending: boolean;
   onRateMatch: (targetUserId: string, rating: number) => void;
 }) {
-  const age = calculateAge(match.date_of_birth);
-  const currentUserAge = calculateAge(currentUser.date_of_birth);
-  const ageDiff = Math.abs(age - currentUserAge);
-  const currentSign = getZodiacSign(currentUser.date_of_birth);
-  const matchSign = getZodiacSign(match.date_of_birth);
+  const ageDiff = Math.abs(match.age - currentUser.age);
+  const currentSign = currentUser.zodiac_sign;
+  const matchSign = match.zodiac_sign;
 
   const displayName = match.nickname
     ? `${match.first_name} "${match.nickname}" ${match.last_name}`
@@ -281,7 +276,7 @@ function MatchCard({
           <div>
             <p className="font-semibold text-base">{displayName}</p>
             <p className="text-sm text-muted-foreground">
-              {age} years old · {match.gender}
+              {match.age} years old · {match.gender}
             </p>
           </div>
         </div>

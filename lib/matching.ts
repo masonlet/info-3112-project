@@ -4,16 +4,18 @@ export type Profile = {
   last_name: string;
   nickname: string | null;
   gender: string;
-  date_of_birth: string;
-  member_type: string;
-  photo_url: string | null;
-  preferred_contact_method: string;
   skills: string[];
+  photo_url: string | null;
+  date_of_birth: string;
+  preferred_contact_method: string;
   desired_skills: string[];
   desired_gender: string | null;
+  member_type: string;
 };
 
-export type Match = Profile & {
+export type Match = Omit<Profile, "date_of_birth"> & {
+  age: number;
+  zodiac_sign: string;
   score: number;
 };
 
@@ -82,30 +84,28 @@ export function calculateCompatibilityScore(
   const candidateAge = calculateAge(candidate.date_of_birth);
   const ageDiff = Math.abs(currentAge - candidateAge);
 
-  if (ageDiff === 0) score += 25;
-  else if (ageDiff <= 2) score += 21;
-  else if (ageDiff <= 5) score += 17;
-  else if (ageDiff <= 8) score += 11;
+  if      (ageDiff === 0) score += 25;
+  else if (ageDiff <= 2)  score += 21;
+  else if (ageDiff <= 5)  score += 17;
+  else if (ageDiff <= 8)  score += 11;
   else if (ageDiff <= 12) score += 5;
 
   // CONTACT METHOD MATCH (20 points)
-  if (currentUser.preferred_contact_method === candidate.preferred_contact_method) {
+  if (currentUser.preferred_contact_method === candidate.preferred_contact_method)
     score += 20;
-  }
 
   // ZODIAC COMPATIBILITY (25 points)
   const currentSign = getZodiacSign(currentUser.date_of_birth);
   const candidateSign = getZodiacSign(candidate.date_of_birth);
 
-  if (currentSign === candidateSign) {
+  if (currentSign === candidateSign)
     score += 25;
-  } else if (areZodiacsCompatible(currentSign, candidateSign)) {
-    score += 12;
-  }
+  else if (areZodiacsCompatible(currentSign, candidateSign))
+      score += 12;
 
   // PROFILE COMPLETENESS (10 points)
   if (candidate.photo_url) score += 5;
-  if (candidate.nickname) score += 5;
+  if (candidate.nickname)  score += 5;
 
   // SKILL COMPATIBILITY (20 points)
   const skillOverlap = currentUser.desired_skills?.filter((s) =>
@@ -118,7 +118,7 @@ export function calculateCompatibilityScore(
 
   const totalOverlap = skillOverlap + desiredOverlap;
 
-  if (totalOverlap >= 3) score += 20;
+  if      (totalOverlap >= 3)  score += 20;
   else if (totalOverlap === 2) score += 14;
   else if (totalOverlap === 1) score += 7;
 

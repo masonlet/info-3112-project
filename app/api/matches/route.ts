@@ -1,16 +1,20 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { calculateCompatibilityScore, type Profile, type Match } from "@/lib/matching";
+import {
+  calculateCompatibilityScore,
+  calculateAge,
+  getZodiacSign,
+  type Profile,
+  type Match,
+} from "@/lib/matching";
 import { isPMType } from "@/lib/roles";
 
 export async function GET() {
   const supabase = await createClient();
-
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-
   if (userError || !user) {
     return NextResponse.json(
       { error: "You must be logged in to view matches." },
@@ -23,7 +27,6 @@ export async function GET() {
     .select("user_id, first_name, last_name, nickname, gender, date_of_birth, member_type, photo_url, preferred_contact_method, skills, desired_skills, desired_gender, role")
     .eq("user_id", user.id)
     .maybeSingle();
-
   if (profileError || !currentProfile) {
     return NextResponse.json(
       { error: "Please complete your profile before viewing matches." },
@@ -37,7 +40,6 @@ export async function GET() {
       { status: 403 }
     );
   }
-
   if (isPMType(currentProfile.member_type ?? "", currentProfile.role ?? "")) {
     return NextResponse.json(
       { error: "Product managers cannot view matches." },
@@ -51,12 +53,10 @@ export async function GET() {
     .or("member_type.eq.Paid")
     .neq("user_id", user.id);
 
-  if (currentProfile.desired_gender && currentProfile.desired_gender !== "No Preference") {
+  if (currentProfile.desired_gender && currentProfile.desired_gender !== "No Preference")
     query = query.eq("gender", currentProfile.desired_gender);
-  }
 
   const { data: candidates, error: candidatesError } = await query;
-
   if (candidatesError) {
     return NextResponse.json(
       { error: "Failed to load match recommendations. Please try again." },
@@ -65,11 +65,40 @@ export async function GET() {
   }
 
   const scoredMatches: Match[] = (candidates ?? [])
-    .map((candidate: Profile) => ({
-      ...candidate,
+    .map((candidate: Profile): Match => ({
+      user_id: candidate.user_id,
+      first_name: candidate.first_name,
+      last_name: candidate.last_name,
+      nickname: candidate.nickname,
+      gender: candidate.gender,
+      member_type: candidate.member_type,
+      photo_url: candidate.photo_url,
+      preferred_contact_method: candidate.preferred_contact_method,
+      skills: candidate.skills,
+      desired_skills: candidate.desired_skills,
+      desired_gender: candidate.desired_gender,
+      age: calculateAge(candidate.date_of_birth),
+      zodiac_sign: getZodiacSign(candidate.date_of_birth),
       score: calculateCompatibilityScore(currentProfile, candidate),
     }))
-    .sort((a: Match, b: Match) => b.score - a.score);
+    .sort((a, b) => b.score - a.score);
 
-  return NextResponse.json({ matches: scoredMatches, currentProfile });
+  const safeCurrentProfile: Match = {
+    user_id: currentProfile.user_id,
+    first_name: currentProfile.first_name,
+    last_name: currentProfile.last_name,
+    nickname: currentProfile.nickname,
+    gender: currentProfile.gender,
+    member_type: currentProfile.member_type,
+    photo_url: currentProfile.photo_url,
+    preferred_contact_method: currentProfile.preferred_contact_method,
+    skills: currentProfile.skills,
+    desired_skills: currentProfile.desired_skills,
+    desired_gender: currentProfile.desired_gender,
+    age: calculateAge(currentProfile.date_of_birth),
+    zodiac_sign: getZodiacSign(currentProfile.date_of_birth),
+    score: 0,
+  };
+
+  return NextResponse.json({ matches: scoredMatches, currentProfile: safeCurrentProfile });
 }
