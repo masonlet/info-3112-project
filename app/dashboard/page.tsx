@@ -1,25 +1,9 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDashboardStats } from "@/lib/dashboard";
+import { requirePM } from "@/lib/auth-guards";
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role, member_type, first_name")
-    .eq("user_id", user.id)
-    .single();
-
-  const isRealPM = profile?.role === "product_manager" || profile?.role === "owner";
-  const isDemo = profile?.member_type === "Product Manager";
-
-  if (!isRealPM && !isDemo) redirect("/");
-
+  const { supabase, profile, isDemo } = await requirePM();
   const stats = await getDashboardStats(supabase);
 
   return (

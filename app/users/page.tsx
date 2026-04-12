@@ -1,24 +1,9 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { isPMType } from "@/lib/roles";
 import { getAllUsers } from "@/lib/dashboard";
 import { UsersTable } from "@/components/users/UsersTable";
+import { requirePM } from "@/lib/auth-guards";
 
 export default async function UsersPage() {
-  const supabase = await createClient();
-
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role, member_type")
-    .eq("user_id", user.id)
-    .single();
-
-  if (!isPMType(profile?.member_type ?? "", profile?.role ?? "")) redirect ("/");
-
-  const isDemo = profile?.member_type === "Product Manager";
+  const { supabase, user, profile, isDemo } = await requirePM();
   const users = await getAllUsers(supabase);
 
   return (
