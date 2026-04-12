@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-type Plan = "Free" | "Paid";
+type Plan = "Free" | "Paid" | "Product Manager";
 
 type MembershipResponse = {
   success?: boolean;
@@ -140,46 +140,56 @@ export default function MembershipPage() {
           {plans.map(({ plan, label, description }) => {
             const isActive = currentPlan === plan;
             return (
-              <div key={plan} className={`rounded-md border px-4 py-3 flex items-center justify-between gap-4 ${isActive ? "bg-muted/60 border-primary" : "bg-background"}`}>
-                <div>
-                  <p className="text-sm font-medium">{label}</p>
-                  <p className="text-xs text-muted-foreground">{description}</p>
+              <div key={plan}>
+                <div className={`rounded-md border px-4 py-3 flex items-center justify-between gap-4 ${isActive ? "bg-muted/60 border-primary" : "bg-background"}`}>
+                  <div>
+                    <p className="text-sm font-medium">{label}</p>
+                    <p className="text-xs text-muted-foreground">{description}</p>
+                  </div>
+                  {isActive ? (
+                    <span className="text-xs font-medium text-muted-foreground">Current</span>
+                  ) : (
+                    <Button
+                      size="sm"
+                      disabled={!!submitting || loading}
+                      onClick={() => {
+                        if (plan === "Paid") {
+                          setSuccess("");
+                          setPendingPaidPlan(true);
+                        } else {
+                          switchPlan(plan);
+                        }
+                      }}
+                    > {submitting === plan ? "Switching..." : "Select"}
+                    </Button>
+                  )}
                 </div>
-                {isActive ? (
-                  <span className="text-xs font-medium text-muted-foreground">Current</span>
-                ) : (
-                  <Button
-                    size="sm"
-                    disabled={!!submitting || loading}
-                    onClick={() => {
-                      if (plan === "Paid") {
-                        setSuccess("");
-                        setPendingPaidPlan(true);
-                      } else {
-                        switchPlan(plan);
-                      }
-                    }}
-                  > {submitting === plan ? "Switching..." : "Select"}
-                  </Button>
+                {plan === "Paid" && pendingPaidPlan && (
+                  <div className="rounded-md border bg-muted/40 px-4 py-3 space-y-3">
+                    <p className="text-sm font-medium">Complete Payment</p>
+                    <p className="text-xs text-muted-foreground">Demo payment flow (mock only)</p>
+                    <div className="flex gap-2">
+                      <Button
+                        className="flex-1"
+                        onClick={handleFakePayment}
+                        disabled={submitting === "Paid"}
+                      >
+                        {submitting ? "Processing..." : "Pay with Google"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => setPendingPaidPlan(false)}
+                        disabled={submitting === "Paid"}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
                 )}
               </div>
             );
           })}
-
-          {pendingPaidPlan && (
-            <div className="rounded-md border bg-muted/40 px-4 py-3 space-y-3">
-              <p className="text-sm font-medium">Complete Payment</p>
-              <p className="text-xs text-muted-foreground">Demo payment flow (mock only)</p>
-              <div className="flex gap-2">
-                <Button className="flex-1" onClick={handleFakePayment} disabled={submitting === "Paid"}>
-                  {submitting ? "Processing..." : "Pay with Google"}
-                </Button>
-                <Button variant="outline" className="flex-1" onClick={() => setPendingPaidPlan(false)} disabled={submitting === "Paid"}>
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

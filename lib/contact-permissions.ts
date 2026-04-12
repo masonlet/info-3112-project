@@ -1,4 +1,4 @@
-export type MemberType = "Free" | "Paid" | "Product Manager";
+import { MemberType } from "@/lib/roles";
 
 export function normalizeMemberType(memberType: string): MemberType {
   if (memberType === "Paid" || memberType === "Product Manager")

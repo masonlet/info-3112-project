@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { isPMType } from "@/lib/roles";
 
 const guestLinks = [
   { href: "/", label: "Home" },
@@ -37,20 +38,13 @@ const Logo = () => (
 
 const supabase = createClient();
 
-function getIsPM(profile: { member_type?: string; role?: string } | null): boolean {
-  return profile?.member_type === "Product Manager"
-      || profile?.role === "product_manager"
-      || profile?.role === "owner"
-      || false;
-}
-
 async function fetchIsPM(userId: string): Promise<boolean> {
   const { data: profile } = await supabase
     .from("profiles")
     .select("member_type, role")
     .eq("user_id", userId)
     .maybeSingle();
-  return getIsPM(profile);
+  return isPMType(profile?.member_type ?? "", profile?.role ?? "");
 }
 
 export default function Header() {
