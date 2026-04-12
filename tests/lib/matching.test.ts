@@ -219,7 +219,7 @@ describe("calculateCompatibilityScore", () => {
     expect(score1 - score2).toBe(20);
   });
 
-  it("same zodiac sign adds 25 points over incompatible", () => {
+  it("same zodiac sign scores higher than incompatible", () => {
     const user1 = { ...baseProfile, date_of_birth: "2000-03-25", skills: [], desired_skills: [] };
     const user2 = { ...baseProfile, user_id: "2", date_of_birth: "2000-03-25", skills: [], desired_skills: [] };
     const user3 = { ...baseProfile, user_id: "3", date_of_birth: "2000-06-15", skills: [], desired_skills: [] };
@@ -230,7 +230,7 @@ describe("calculateCompatibilityScore", () => {
     expect(score1).toBeGreaterThan(score2);
   });
 
-  it("compatible zodiac adds 12 points not 25", () => {
+  it("same zodiac sign scores higher than compatible", () => {
     const user1 = { ...baseProfile, date_of_birth: "2000-03-25", skills: [], desired_skills: [] };
     const compatible = { ...baseProfile, user_id: "2", date_of_birth: "2000-05-25", skills: [], desired_skills: [] };
     const sameSign = { ...baseProfile, user_id: "3", date_of_birth: "2000-04-10", skills: [], desired_skills: [] };
