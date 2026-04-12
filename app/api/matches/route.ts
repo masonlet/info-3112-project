@@ -20,7 +20,7 @@ export async function GET() {
 
   const { data: currentProfile, error: profileError } = await supabase
     .from("profiles")
-    .select("*")
+    .select("user_id, first_name, last_name, nickname, gender, date_of_birth, member_type, photo_url, preferred_contact_method, skills, desired_skills, desired_gender, role")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -47,7 +47,7 @@ export async function GET() {
 
   let query = supabase
     .from("profiles")
-    .select("*")
+    .select("user_id, first_name, last_name, nickname, gender, date_of_birth, member_type, photo_url, preferred_contact_method, skills, desired_skills, desired_gender, role")
     .or("member_type.eq.Paid")
     .neq("user_id", user.id);
 
