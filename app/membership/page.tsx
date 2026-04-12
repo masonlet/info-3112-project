@@ -14,8 +14,21 @@ type MembershipResponse = {
 };
 
 const plans: { plan: Plan; label: string; description: string }[] = [
-  { plan: "Free", label: "Free", description: "Basic access to the platform." },
-  { plan: "Paid", label: "Paid", description: "Full access to the platform." },
+  {
+    plan: "Free",
+    label: "Free",
+    description: "Basic access to the platform."
+  },
+  {
+    plan: "Paid",
+    label: "Paid",
+    description: "Full access to the platform."
+  },
+  {
+    plan: "Product Manager",
+    label: "Product Manager",
+    description: "Access to the platform management tools. (DEMONSTRATION ONLY)"
+  }
 ];
 
 export default function MembershipPage() {

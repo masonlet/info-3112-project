@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-const VALID_PLANS = ["Free", "Paid"];
+const VALID_PLANS = ["Free", "Paid", "Product Manager"];
 
 export async function POST(req: Request) {
   const supabase = await createClient();

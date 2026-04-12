@@ -1,7 +1,7 @@
-export type MemberType = "Free" | "Paid" | "Product Manager (Demo)";
+export type MemberType = "Free" | "Paid" | "Product Manager";
 
 export function normalizeMemberType(memberType: string): MemberType {
-  if (memberType === "Paid" || memberType === "Product Manager (Demo)")
+  if (memberType === "Paid" || memberType === "Product Manager")
     return memberType;
   return "Free";
 }
@@ -21,8 +21,8 @@ type ContactPermissionInput = {
   ownerContactIdentifier: string | null;
 };
 
-export function getDefaultContactVisibility(): boolean {
-  // Option A policy: visibility is opt-in for everyone.
+// Option A policy: visibility is opt-in for everyone.
+export function getDefaultContactVisibility(): boolean { 
   return false;
 }
 

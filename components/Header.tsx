@@ -14,16 +14,17 @@ const guestLinks = [
 
 const memberLinks = [
   { href: "/", label: "Home" },
-  { href: "/membership", label: "Membership" },
   { href: "/matches", label: "Matches" },
   { href: "/profile", label: "Profile" },
+  { href: "/membership", label: "Membership" },
   { href: "/settings", label: "Settings" },
 ];
 
 const pmLinks = [
   { href: "/", label: "Home" },
+  { href: "/users/", label: "Users" },  
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/users/", label: "Users" },
+  { href: "/membership", label: "Membership" },
   { href: "/settings/", label: "Settings" },
 ];
 
@@ -37,10 +38,10 @@ const Logo = () => (
 const supabase = createClient();
 
 function getIsPM(profile: { member_type?: string; role?: string } | null): boolean {
-  return profile?.member_type === "Product Manager (Demo)"
-    || profile?.role === "product_manager"
-    || profile?.role === "owner"
-    || false;
+  return profile?.member_type === "Product Manager"
+      || profile?.role === "product_manager"
+      || profile?.role === "owner"
+      || false;
 }
 
 async function fetchIsPM(userId: string): Promise<boolean> {
