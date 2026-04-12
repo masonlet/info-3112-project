@@ -8,6 +8,9 @@ export type Profile = {
   member_type: string;
   photo_url: string | null;
   preferred_contact_method: string;
+  skills: string[];
+  desired_skills: string[];
+  desired_gender: string | null;
 };
 
 export type Match = Profile & {
@@ -74,35 +77,50 @@ export function calculateCompatibilityScore(
 ): number {
   let score = 0;
 
-  // AGE COMPATIBILITY - sliding scale (35 points)
+  // AGE COMPATIBILITY - sliding scale (25 points)
   const currentAge = calculateAge(currentUser.date_of_birth);
   const candidateAge = calculateAge(candidate.date_of_birth);
   const ageDiff = Math.abs(currentAge - candidateAge);
 
-  if (ageDiff === 0) score += 35;
-  else if (ageDiff <= 2) score += 30;
-  else if (ageDiff <= 5) score += 24;
-  else if (ageDiff <= 8) score += 16;
-  else if (ageDiff <= 12) score += 8;
+  if (ageDiff === 0) score += 25;
+  else if (ageDiff <= 2) score += 21;
+  else if (ageDiff <= 5) score += 17;
+  else if (ageDiff <= 8) score += 11;
+  else if (ageDiff <= 12) score += 5;
 
-  // CONTACT METHOD MATCH (25 points)
+  // CONTACT METHOD MATCH (20 points)
   if (currentUser.preferred_contact_method === candidate.preferred_contact_method) {
-    score += 25;
+    score += 20;
   }
 
-  // ZODIAC COMPATIBILITY (30 points)
+  // ZODIAC COMPATIBILITY (25 points)
   const currentSign = getZodiacSign(currentUser.date_of_birth);
   const candidateSign = getZodiacSign(candidate.date_of_birth);
 
   if (currentSign === candidateSign) {
-    score += 30;
+    score += 25;
   } else if (areZodiacsCompatible(currentSign, candidateSign)) {
-    score += 15;
+    score += 12;
   }
 
   // PROFILE COMPLETENESS (10 points)
   if (candidate.photo_url) score += 5;
   if (candidate.nickname) score += 5;
 
-  return score; 
+  // SKILL COMPATIBILITY (20 points)
+  const skillOverlap = currentUser.desired_skills?.filter((s) =>
+    candidate.skills?.includes(s)
+  ).length ?? 0;
+
+  const desiredOverlap = candidate.desired_skills?.filter((s) =>
+    currentUser.skills?.includes(s)
+  ).length ?? 0;
+
+  const totalOverlap = skillOverlap + desiredOverlap;
+
+  if (totalOverlap >= 3) score += 20;
+  else if (totalOverlap === 2) score += 14;
+  else if (totalOverlap === 1) score += 7;
+
+  return score;
 }

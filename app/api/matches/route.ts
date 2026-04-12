@@ -39,11 +39,17 @@ export async function GET() {
     );
   }
 
-  const { data: candidates, error: candidatesError } = await supabase
+  let query = supabase
     .from("profiles")
     .select("*")
     .or("member_type.eq.Paid")
     .neq("user_id", user.id);
+
+  if (currentProfile.desired_gender && currentProfile.desired_gender !== "No Preference") {
+    query = query.eq("gender", currentProfile.desired_gender);
+  }
+
+  const { data: candidates, error: candidatesError } = await query;
 
   if (candidatesError) {
     return NextResponse.json(
