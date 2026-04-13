@@ -134,6 +134,20 @@ export async function POST(req: Request) {
     );
   }
 
+  const { data: exposures, error: exposureError } = await auth.supabase
+    .from("contact_info_exposures")
+    .select("owner_user_id")
+    .eq("viewer_user_id", auth.user.id)
+    .eq("owner_user_id", targetUserId)
+    .limit(1);
+
+  if (exposureError || !exposures || exposures.length === 0) {
+    return NextResponse.json(
+      { error: "Request contact info before rating this match." },
+      { status: 403 }
+    );
+  }
+
   const { error: upsertError } = await auth.supabase.from("match_feedback").upsert(
     {
       rater_user_id: auth.user.id,

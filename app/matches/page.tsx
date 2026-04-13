@@ -57,6 +57,11 @@ export default function MatchesPage() {
           contactIdentifier: data.contactIdentifier,
         },
       }));
+      setRatingSuccess((prev) => ({
+        ...prev,
+        [targetUserId]: " ",
+      }));
+      setRatingErrors((prev) => ({ ...prev, [targetUserId]: "" }));
     } catch {
       setRequestErrors((prev) => ({
         ...prev,
@@ -256,6 +261,7 @@ function MatchCard({
     reasons.push(`Compatible signs: ${currentSign} & ${matchSign}`);
   if (match.photo_url) reasons.push("Has photo");
   if (match.nickname) reasons.push("Has nickname");
+  const canRate = Boolean(revealedContact) || Boolean(currentRating);
 
   return (
     <Card className="shadow-md border hover:shadow-lg transition-shadow">
@@ -352,38 +358,40 @@ function MatchCard({
 
         {requestError && <p className="text-xs text-red-500">{requestError}</p>}
 
-        <div className="rounded-md border p-3 space-y-2">
-          <p className="text-xs text-muted-foreground">Rate this match quality</p>
-          <div className="flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((value) => {
-              const active = (currentRating ?? 0) >= value;
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  aria-label={`Rate ${displayName} ${value} out of 5`}
-                  disabled={isRatingPending}
-                  onClick={() => onRateMatch(match.user_id, value)}
-                  className="rounded p-1 transition-colors hover:bg-muted disabled:opacity-60"
-                >
-                  <Star
-                    className={cn(
-                      "h-5 w-5",
-                      active ? "fill-amber-400 text-amber-400" : "text-muted-foreground"
-                    )}
-                  />
-                </button>
-              );
-            })}
+        {canRate && (
+          <div className="rounded-md border p-3 space-y-2">
+            <p className="text-xs text-muted-foreground">Rate this match quality</p>
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((value) => {
+                const active = (currentRating ?? 0) >= value;
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-label={`Rate ${displayName} ${value} out of 5`}
+                    disabled={isRatingPending}
+                    onClick={() => onRateMatch(match.user_id, value)}
+                    className="rounded p-1 transition-colors hover:bg-muted disabled:opacity-60"
+                  >
+                    <Star
+                      className={cn(
+                        "h-5 w-5",
+                        active ? "fill-amber-400 text-amber-400" : "text-muted-foreground"
+                      )}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {currentRating
+                ? `Your rating: ${currentRating}/5`
+                : "No rating submitted yet."}
+            </p>
+            {ratingSuccess && <p className="text-xs text-emerald-600">{ratingSuccess}</p>}
+            {ratingError && <p className="text-xs text-red-500">{ratingError}</p>}
           </div>
-          <p className="text-xs text-muted-foreground">
-            {currentRating
-              ? `Your rating: ${currentRating}/5`
-              : "No rating submitted yet."}
-          </p>
-          {ratingSuccess && <p className="text-xs text-emerald-600">{ratingSuccess}</p>}
-          {ratingError && <p className="text-xs text-red-500">{ratingError}</p>}
-        </div>
+        )}
       </CardContent>
     </Card>
   );
