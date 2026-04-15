@@ -6,28 +6,41 @@
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?logo=vercel)](https://vercel.com)
 [![Vitest](https://img.shields.io/badge/Vitest-Tests-green)](https://vitest.dev)
 
-A repository for the INFO-3112 group project.
-
-- Project Name: LookingForLove
-- Methodology: Scrum / Agile
-
 ## Project Overview
 
-This repository contains all project code, documentation, and planning materials for LookingForLove. Our group will be developing an IT dating website over 8 weeks using Scrum.
+This repository contains all INFO-3112 group project code, documentation, and planning materials for LookingForLove.
+Our group will be developing an IT dating website over 8 weeks using Scrum.
   
-## LookingForLove Coders
+### LookingForLove Coders
 
-| Name                    | Role |
-| ----------------------- | ---- |
-| Kyan Oberas             | Scrum Master / Developer |
-| Unish Pandey            | Developer |
+| Name                    | Role      |
+| ----------------------- | --------- |
 | Mason L'Etoile          | Developer |
 | Joseph Jaikaran         | Developer |
+| Unish Pandey            | Developer |
 | Ahmed Elmardi O Ibrahim | Developer |
+| Kyan Oberas             | Developer |
 
-## Website
+### Website
 
 - [info-3112-project](https://info-3112-project.vercel.app)
+
+## Features
+
+**Free Members**
+- Register and login via Supabase Auth
+- Create and edit profile (skills, gender, contact information, partner preferences)
+- Update email, password, signout, and delete account
+
+**Paid Members**
+- Access premium membership tier via subscription. Everything in free, plus:
+- View match recommendations based on partner preferences
+- Request and share contact info with matched users
+- Rate the quality of matches when requesting contact information
+
+**Product Manager (DEMO)**
+- Dashboard with website statistics (Free and paid member counts, plus contact information exposure amount)
+- Role-based dashboard for user oversight and management
 
 ## Tech Stack
 
@@ -43,29 +56,32 @@ This repository contains all project code, documentation, and planning materials
 
 ## Timeline & Evaluation Breakdown
 
-| Status      | Week(s)    | Deliverable               | Weight |
-| ----------- | ---------- | ------------------------- | ------ |
-| Complete    | Week 6     | Project Kickoff           | N/A    |
-| Complete    | Week 7     | Project Planning          | N/A    |
-| In Progress | Week 8-9   | Sprint 1 - Sprint Plan    | 5%     |
-| In Progress | Week 8-9   | Sprint 1 - Retrospective  | 5%     |
-| Planned     | Week 10-11 | Sprint 2 - Sprint Plan    | 5%     |
-| Planned     | Week 10-11 | Sprint 2 - Retrospective  | 5%     |
-| Planned     | Week 12-13 | Sprint 3 - Sprint Plan    | 5%     |
-| Planned     | Week 12-13 | Sprint 3 - Retrospective  | 5%     |
-| Planned     | Week 14    | Final Product Demo        | 35%    |
+| Week(s)    | Deliverable               | Weight |
+| ---------- | ------------------------- | ------ |
+| Week 6     | Project Kickoff           | N/A    |
+| Week 7     | Project Planning          | N/A    |
+| Week 8-9   | Sprint 1 - Sprint Plan    | 5%     |
+| Week 8-9   | Sprint 1 - Retrospective  | 5%     |
+| Week 10-11 | Sprint 2 - Sprint Plan    | 5%     |
+| Week 10-11 | Sprint 2 - Retrospective  | 5%     |
+| Week 12-13 | Sprint 3 - Sprint Plan    | 5%     |
+| Week 12-13 | Sprint 3 - Retrospective  | 5%     |
+| Week 14    | Final Product Demo        | 35%    |
 
 ## Repo Structure
 ```bash
-├── README.md
-├── app/        # Next.js app router
-├── components/ # Shared UI components
-├── lib/        # Supabase client/server helpers
-├── tests/      # Unit tests
-└── docs/
-    └── vision-document/
-
-# Additional folders will be added as project progresses and they are needed
+├── .env.example        # Environment Variables
+├── CONTRIBUTING.md     # Project Contribution Standards
+├── README.md           # Project README
+├── LICENSE             # Project MIT License
+├── app/                # Next.js app router
+├── components/         # Shared UI components
+├── lib/                # Shared helpers
+│   ├── context/        # React context provider
+│   └── supabase/       # Shared supabase client/server helpers
+│       └── migrations/ # Database Migrations
+├── hooks/              # Reusable React hooks
+└── tests/              # Unit tests
 ```
 
 ## Deployment & Configuration
