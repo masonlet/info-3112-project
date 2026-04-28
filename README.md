@@ -1,6 +1,8 @@
 # INFO 3112 Group Project - LookingForLove
 
-[![CI](https://github.com/masonlet/info-3112-project/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/masonlet/info-3112-project/actions/workflows/ci.yml)
+> **Archived** — this repo preserves the source and project documentation. The site is no longer deployed and all data has been removed.
+
+![CI](https://img.shields.io/badge/CI-archived-lightgrey)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org)
 [![Supabase](https://img.shields.io/badge/Supabase-DB%20%2B%20Auth-lightblue)](https://supabase.com)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?logo=vercel)](https://vercel.com)
@@ -20,10 +22,6 @@ Our group will be developing an IT dating website over 8 weeks using Scrum.
 | Unish Pandey            | Developer |
 | Ahmed Elmardi O Ibrahim | Developer |
 | Kyan Oberas             | Developer |
-
-### Website
-
-- [info-3112-project](https://info-3112-project.vercel.app)
 
 ## Features
 
