@@ -1,6 +1,6 @@
 import { getAllUsers } from "@/lib/dashboard";
 import { UsersTable } from "@/components/users/UsersTable";
-import { requirePM } from "@/lib/auth/guards";
+import { requirePM } from "@/lib/auth/page-guards";
 
 export default async function UsersPage() {
   const { user, profile, isDemo } = await requirePM();

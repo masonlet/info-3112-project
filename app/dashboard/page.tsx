@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDashboardStats } from "@/lib/dashboard";
-import { requirePM } from "@/lib/auth/guards";
+import { requirePM } from "@/lib/auth/page-guards";
 
 export default async function DashboardPage() {
   const { profile, isDemo } = await requirePM();
