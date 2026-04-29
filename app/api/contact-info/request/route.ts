@@ -18,6 +18,7 @@ export async function POST(req: Request) {
     error: userError,
   } = await supabase.auth.getUser();
 
+  if (userError) console.error("[ERROR] Contact Info Auth:", userError);
   if (userError || !user) return NextResponse.json(
     { error: "You must be logged in to request contact information." },
     { status: 401 }
@@ -42,7 +43,15 @@ export async function POST(req: Request) {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (viewerError || !viewerProfile) return NextResponse.json(
+  if (viewerError) {
+    console.error("[ERROR] Contact Info Viewer Profile Fetch:", viewerError);
+    return NextResponse.json(
+      { error: "Failed to load your profile. Please try again." },
+      { status: 500 }
+    );
+  }
+
+  if (!viewerProfile) return NextResponse.json(
     { error: "Complete your profile before requesting contact details." },
     { status: 400 }
   );
@@ -54,7 +63,14 @@ export async function POST(req: Request) {
     .eq("user_id", targetUserId)
     .maybeSingle();
 
-  if (ownerError || !ownerProfile) return NextResponse.json(
+  if (ownerError) {
+    console.error("[ERROR] Contact Info Owner Profile Fetch:", ownerError);
+    return NextResponse.json(
+      { error: "Failed to look up member's contact settings. Please try again." },
+      { status: 500 }
+    );
+  }
+  if (!ownerProfile) return NextResponse.json(
     { error: "Unable to find this member's contact settings." },
     { status: 404 }
   );

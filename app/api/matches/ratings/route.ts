@@ -32,7 +32,20 @@ async function getAuthorizedPaidUser() {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (profileError || !profile) return {
+  if (profileError) {
+    console.error("[ERROR] Ratings Profile Fetch:", profileError);
+    return {
+      supabase,
+      error: NextResponse.json(
+        { error: "Failed to load your profile. Please try again." },
+        { status: 500 }
+      ),
+      user: null,
+      profile: null,
+    };
+  }
+
+  if (!profile) return {
     supabase,
     error: NextResponse.json(
       { error: "Complete your profile before rating matches." },
@@ -62,7 +75,12 @@ async function getAuthorizedPaidUser() {
     profile,
   };
 
-  return { supabase, error: null, user, profile };
+  return {
+    supabase,
+    error: null,
+    user,
+    profile
+  };
 }
 
 export async function GET() {
@@ -74,10 +92,13 @@ export async function GET() {
     .select("target_user_id, rating")
     .eq("rater_user_id", auth.user.id);
 
-  if (error) return NextResponse.json(
-    { error: "Failed to load your match ratings." },
-    { status: 500 }
-  );
+  if (error) {
+    console.error("[ERROR] Ratings Feedback Fetch:", error);
+    return NextResponse.json(
+      { error: "Failed to load your match ratings." },
+      { status: 500 }
+    );
+  }
 
   const ratings = Object.fromEntries(
     (data ?? []).map(
@@ -118,7 +139,15 @@ export async function POST(req: Request) {
     .eq("user_id", targetUserId)
     .maybeSingle();
 
-  if (targetError || !targetProfile) return NextResponse.json(
+  if (targetError) {
+    console.error("[ERROR] Ratings Target Lookup:", targetError);
+    return NextResponse.json(
+      { error: "Failed to look up match. Please try again." },
+      { status: 500 }
+    );
+  }
+
+  if (!targetProfile) return NextResponse.json(
     { error: "The selected match could not be found." },
     { status: 404 }
   );
@@ -130,7 +159,15 @@ export async function POST(req: Request) {
     .eq("owner_user_id", targetUserId)
     .limit(1);
 
-  if (exposureError || !exposures || exposures.length === 0) return NextResponse.json(
+  if (exposureError) {
+    console.error("[ERROR] Ratings Exposures Lookup:", exposureError);
+    return NextResponse.json(
+      { error: "Failed to verify contact info request. Please try again." },
+      { status: 500 }
+    );
+  }
+
+  if (!exposures || exposures.length === 0) return NextResponse.json(
     { error: "Request contact info before rating this match." },
     { status: 403 }
   );
@@ -144,10 +181,13 @@ export async function POST(req: Request) {
     { onConflict: "rater_user_id,target_user_id", }
   );
 
-  if (upsertError) return NextResponse.json(
-    { error: "Unable to save your rating right now." },
-    { status: 500 }
-  );
+  if (upsertError) {
+    console.error("[ERROR] Ratings Feedback Upsert:", upsertError);
+    return NextResponse.json(
+      { error: "Unable to save your rating right now." },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({ success: true });
 }

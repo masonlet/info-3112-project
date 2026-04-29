@@ -7,6 +7,7 @@ export async function POST(req: Request) {
   const updatedAt = new Date().toISOString();
 
   const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError) console.error("[ERROR] Subscribe Auth:", userError);
   if (userError || !user) {
     return NextResponse.json(
       { error: "You must be logged in to subscribe." },
@@ -30,9 +31,9 @@ export async function POST(req: Request) {
     .select("user_id");
 
   if (subscribeError) {
-    console.error("Subscribe error:", subscribeError);
+    console.error("[ERROR] Subscribe Update:", subscribeError);
     return NextResponse.json(
-      { error: `Failed to update membership status: ${subscribeError.message}` },
+      { error: "Failed to update membership. Please try again." },
       { status: 500 }
     );
   }
