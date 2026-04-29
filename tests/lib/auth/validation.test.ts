@@ -3,7 +3,7 @@ import {
   validateEmail,
   validatePassword,
   validateContactVisibility,
-} from "@/lib/auth-validation";
+} from "@/lib/auth/validation";
 
 describe("auth-validation", () => {
   describe("validateEmail", () => {

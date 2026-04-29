@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { useFormFields } from "@/hooks/useFormFields";
-import { validateEmail } from "@/lib/auth-validation";
-import { getFriendlyError } from "@/lib/auth-errors";
+import { validateEmail } from "@/lib/auth/validation";
+import { getFriendlyError } from "@/lib/auth/errors";
 
 const supabase = createClient();
 
