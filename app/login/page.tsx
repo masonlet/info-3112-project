@@ -8,8 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormFields } from "@/hooks/useFormFields";
-import { validateEmail } from "@/lib/auth-validation";
-import { getFriendlyError } from "@/lib/auth-errors";
+import { validateEmail } from "@/lib/auth/validation";
+import { getFriendlyError } from "@/lib/auth/errors";
 
 type LoginFormData = {
   email: string;

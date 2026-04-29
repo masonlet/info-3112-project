@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getFriendlyError } from "@/lib/auth-errors";
+import { getFriendlyError } from "@/lib/auth/errors";
 
 describe("getFriendlyError", () => {
   it("maps invalid credentials", () => {

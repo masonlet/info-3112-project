@@ -11,7 +11,7 @@ import { useFormFields } from "@/hooks/useFormFields";
 import {
   validateContactVisibility,
   validateEmail,
-} from "@/lib/auth-validation";
+} from "@/lib/auth/validation";
 import { getDefaultContactVisibility } from "@/lib/contact-permissions";
 
 type ProfileFormData = {

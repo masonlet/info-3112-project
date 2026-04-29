@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
-import { getFriendlyError } from "@/lib/auth-errors";
+import { getFriendlyError } from "@/lib/auth/errors";
 
 const supabase = createClient();
 
