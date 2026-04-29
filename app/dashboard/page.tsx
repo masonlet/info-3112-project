@@ -3,8 +3,8 @@ import { getDashboardStats } from "@/lib/dashboard";
 import { requirePM } from "@/lib/auth-guards";
 
 export default async function DashboardPage() {
-  const { supabase, profile, isDemo } = await requirePM();
-  const stats = await getDashboardStats(supabase);
+  const { profile, isDemo } = await requirePM();
+  const stats = await getDashboardStats();
 
   return (
     <div className="flex-1 py-10 px-4 bg-muted/30">

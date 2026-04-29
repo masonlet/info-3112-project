@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function DELETE() {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.error("CRITICAL: Service role key is missing from ENV variables.");
+    console.error("[ERROR] Delete Account Missing Service Role Key.");
     return NextResponse.json(
       { error: "Server configuration error. Please contact an admin." },
       { status: 500 }
@@ -32,9 +32,11 @@ export async function DELETE() {
   );
 
   const { data: { user }, error: userError } = await supabase.auth.getUser();
-  if (userError || !user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  if (userError) console.error("[ERROR] Delete Account Auth:", userError);
+  if (userError || !user) return NextResponse.json(
+    { error: "Unauthorized" },
+    { status: 401 }
+  );
 
   const admin = createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,7 +45,11 @@ export async function DELETE() {
 
   const { error } = await admin.auth.admin.deleteUser(user.id);
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[ERROR] Delete Account Auth Delete:", error);
+    return NextResponse.json(
+      { error: "Failed to delete account. Please try again." },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ success: true });

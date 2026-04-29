@@ -3,8 +3,8 @@ import { UsersTable } from "@/components/users/UsersTable";
 import { requirePM } from "@/lib/auth-guards";
 
 export default async function UsersPage() {
-  const { supabase, user, profile, isDemo } = await requirePM();
-  const users = await getAllUsers(supabase);
+  const { user, profile, isDemo } = await requirePM();
+  const users = await getAllUsers();
 
   return (
     <div className="flex-1 py-10 px-4 bg-muted/30">

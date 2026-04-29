@@ -4,16 +4,15 @@ import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MemberType } from "@/lib/roles";
+import { type SubscribePlan } from "@/lib/roles";
 import { useUser } from "@/lib/context/user-context";
 
 type MembershipResponse = {
   success?: boolean;
-  member_type?: string;
   error?: string;
 };
 
-const plans: { plan: MemberType; label: string; description: string }[] = [
+const plans: { plan: SubscribePlan; label: string; description: string }[] = [
   {
     plan: "Free",
     label: "Free",
@@ -24,8 +23,8 @@ const plans: { plan: MemberType; label: string; description: string }[] = [
     label: "Paid",
     description: "Full access to the platform."
   },
-  {
-    plan: "Product Manager",
+  { 
+    plan: "DemoProductManager",
     label: "Product Manager",
     description: "Access to the platform management tools. (DEMONSTRATION ONLY)"
   }
@@ -33,9 +32,9 @@ const plans: { plan: MemberType; label: string; description: string }[] = [
 
 export default function MembershipPage() {
   const supabase = useMemo(() => createClient(), []);
-  const [currentPlan, setCurrentPlan] = useState<MemberType | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<SubscribePlan | null>(null);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState<MemberType | null>(null);
+  const [submitting, setSubmitting] = useState<SubscribePlan | null>(null);
   const [pendingPaidPlan, setPendingPaidPlan] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -47,16 +46,21 @@ export default function MembershipPage() {
       if (!user) { setLoading(false); return; }
       const { data } = await supabase
         .from("profiles")
-        .select("member_type")
+        .select("member_type, role")
         .eq("user_id", user.id)
         .maybeSingle();
-      setCurrentPlan((data?.member_type as MemberType) ?? "Free");
+
+      const derived: SubscribePlan =
+        data?.role === "demo_product_manager"
+          ? "DemoProductManager"
+          : ((data?.member_type as "Free" | "Paid") ?? "Free");
+      setCurrentPlan(derived);
       setLoading(false);
     };
     load();
   }, [supabase]);
 
-  const switchPlan = async (plan: MemberType) => {
+  const switchPlan = async (plan: SubscribePlan) => {
     setError("");
     setSuccess("");
     setSubmitting(plan);
@@ -74,7 +78,8 @@ export default function MembershipPage() {
       }
 
       setCurrentPlan(plan);
-      setSuccess(`Switched to ${plan}.`);
+      const planLabel = plans.find(p => p.plan === plan)?.label ?? plan;
+      setSuccess(`Switched to ${planLabel}.`);
       await refresh();
     } catch {
       setError("Something went wrong. Please try again.");
