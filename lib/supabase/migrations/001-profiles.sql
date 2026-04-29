@@ -57,5 +57,5 @@ create policy "profiles_update_own"
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
-grant select, insert, update on public.profiles to authenticated;
+grant select, insert, update on public.profiles to authenticated, service_role;
 

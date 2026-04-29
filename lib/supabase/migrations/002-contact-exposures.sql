@@ -29,5 +29,5 @@ create policy "contact_info_exposures_insert_own_viewer"
   to authenticated
   with check (auth.uid() = viewer_user_id);
 
-grant select, insert on public.contact_info_exposures to authenticated;
+grant select, insert on public.contact_info_exposures to authenticated, service_role;
 

@@ -25,5 +25,5 @@ create policy "match_feedback_owner_only"
   using (auth.uid() = rater_user_id)
   with check (auth.uid() = rater_user_id);
 
-grant select, insert, update, delete on public.match_feedback to authenticated;
+grant select, insert, update, delete on public.match_feedback to authenticated, service_role;
 
