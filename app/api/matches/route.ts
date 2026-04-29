@@ -42,7 +42,7 @@ export async function GET() {
     { error: "Upgrade to a paid membership to view matches." },
     { status: 403 }
   );
-  if (isPMType(currentProfile.member_type ?? "", currentProfile.role ?? "")) return NextResponse.json(
+  if (isPMType(currentProfile.role ?? "")) return NextResponse.json(
     { error: "Product managers cannot view matches." },
     { status: 403 }
   );

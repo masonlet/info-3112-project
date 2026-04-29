@@ -14,7 +14,7 @@ export async function requirePM() {
     .eq("user_id", user.id)
     .single();
 
-  if (!isPMType(profile?.member_type ?? "", profile?.role ?? ""))
+  if (!isPMType(profile?.role ?? ""))
     redirect("/");
 
   return {

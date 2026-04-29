@@ -61,7 +61,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     <UserContext.Provider value={{
       memberType,
       role,
-      isPM: isPMType(memberType ?? "", role),
+      isPM: isPMType(role),
       isLoggedIn,
       loading,
       refresh,

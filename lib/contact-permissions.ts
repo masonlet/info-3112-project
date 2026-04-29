@@ -1,11 +1,5 @@
 import { MemberType } from "@/lib/roles";
 
-export function normalizeMemberType(memberType: string): MemberType {
-  if (memberType === "Paid" || memberType === "Product Manager")
-    return memberType;
-  return "Free";
-}
-
 export type ContactVisibilityDecision = {
   allowed: boolean;
   reason: | "viewer_not_permitted"
