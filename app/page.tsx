@@ -13,8 +13,6 @@ export default async function Home() {
     .eq("user_id", user.id)
     .single();
 
-  if (isPMType(profile?.member_type ?? "", profile?.role ?? ""))
-    redirect("/dashboard");
-
+  if (isPMType(profile?.role ?? "")) redirect("/dashboard");
   redirect("/matches");
 }

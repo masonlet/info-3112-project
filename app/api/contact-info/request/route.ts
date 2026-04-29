@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import {
-  normalizeMemberType,
-  decideContactVisibility
-} from "@/lib/contact-permissions";
+import { decideContactVisibility } from "@/lib/contact-permissions";
+import { type MemberType } from "@/lib/roles";
 
 type RequestPayload = {
   targetUserId?: string;
@@ -86,8 +84,9 @@ export async function POST(req: Request) {
     }
   })();
 
+  const viewerMemberType: MemberType = viewerProfile.member_type === "Paid" ? "Paid" : "Free";
   const decision = decideContactVisibility({
-    viewerMemberType: normalizeMemberType(viewerProfile.member_type ?? "Free"),
+    viewerMemberType,
     ownerShowContactInfo: ownerProfile.show_contact_info ?? false,
     ownerPreferredContactMethod: contactMethod || null,
     ownerContactIdentifier: contactIdentifier || null,

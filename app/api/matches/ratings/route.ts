@@ -65,7 +65,7 @@ async function getAuthorizedPaidUser() {
     profile,
   };
 
-  if (isPMType(profile.member_type ?? "", profile.role ?? "")) return {
+  if (isPMType(profile.role ?? "")) return {
     supabase,
     error: NextResponse.json(
       { error: "Product managers cannot rate matches." },

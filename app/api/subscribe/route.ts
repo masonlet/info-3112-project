@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { isValidPlan } from "@/lib/roles";
+import { SUBSCRIBE_PLANS, type SubscribePlan } from "@/lib/roles";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -15,18 +15,20 @@ export async function POST(req: Request) {
     );
   }
 
-  const { plan } = (await req.json()) as { plan: string };
-  if (!plan || !isValidPlan(plan)) return NextResponse.json(
+  const { plan } = (await req.json()) as { plan: SubscribePlan };
+  if (!plan || !SUBSCRIBE_PLANS.includes(plan)) return NextResponse.json(
     { error: "Plan is missing or invalid." },
     { status: 400 }
   );
 
+  const updates =
+  plan === "DemoProductManager"
+    ? { role: "demo_product_manager", member_type: "Free", updated_at: updatedAt }
+    : { role: "member", member_type: plan, updated_at: updatedAt };
+
   const { data: updated, error: subscribeError } = await supabase
     .from("profiles")
-    .update({
-      member_type: plan,
-      updated_at: updatedAt,
-    })
+    .update(updates)
     .eq("user_id", user.id)
     .select("user_id");
 
@@ -43,8 +45,5 @@ export async function POST(req: Request) {
     { status: 400 }
   );
 
-  return NextResponse.json({
-    success: true,
-    member_type: plan,
-  });
+  return NextResponse.json({ success: true });
 }
