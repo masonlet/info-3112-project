@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   normalizeMemberType,
   decideContactVisibility
@@ -17,26 +18,23 @@ export async function POST(req: Request) {
     error: userError,
   } = await supabase.auth.getUser();
 
-  if (userError || !user) {
-    return NextResponse.json(
-      { error: "You must be logged in to request contact information." },
-      { status: 401 }
-    );
-  }
+  if (userError || !user) return NextResponse.json(
+    { error: "You must be logged in to request contact information." },
+    { status: 401 }
+  );
 
   const body = (await req.json()) as RequestPayload;
   const targetUserId = body.targetUserId?.trim();
 
-  if (!targetUserId) {
-    return NextResponse.json({ error: "targetUserId is required." }, { status: 400 });
-  }
+  if (!targetUserId) return NextResponse.json(
+    { error: "targetUserId is required." },
+    { status: 400 }
+  );
 
-  if (targetUserId === user.id) {
-    return NextResponse.json(
-      { error: "You cannot request your own contact information." },
-      { status: 400 }
-    );
-  }
+  if (targetUserId === user.id) return NextResponse.json(
+    { error: "You cannot request your own contact information." },
+    { status: 400 }
+  );
 
   const { data: viewerProfile, error: viewerError } = await supabase
     .from("profiles")
@@ -44,25 +42,22 @@ export async function POST(req: Request) {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (viewerError || !viewerProfile) {
-    return NextResponse.json(
-      { error: "Complete your profile before requesting contact details." },
-      { status: 400 }
-    );
-  }
+  if (viewerError || !viewerProfile) return NextResponse.json(
+    { error: "Complete your profile before requesting contact details." },
+    { status: 400 }
+  );
 
-  const { data: ownerProfile, error: ownerError } = await supabase
+  const admin = createAdminClient();
+  const { data: ownerProfile, error: ownerError } = await admin
     .from("profiles")
     .select("preferred_contact_method, show_contact_info, email, phone, discord, linkedin")
     .eq("user_id", targetUserId)
     .maybeSingle();
 
-  if (ownerError || !ownerProfile) {
-    return NextResponse.json(
-      { error: "Unable to find this member's contact settings." },
-      { status: 404 }
-    );
-  }
+  if (ownerError || !ownerProfile) return NextResponse.json(
+    { error: "Unable to find this member's contact settings." },
+    { status: 404 }
+  );
 
   const contactMethod = ownerProfile.preferred_contact_method?.trim() ?? "";
   const contactIdentifier = (() => {
@@ -82,12 +77,10 @@ export async function POST(req: Request) {
     ownerContactIdentifier: contactIdentifier || null,
   });
 
-  if (!decision.allowed) {
-    return NextResponse.json(
-      { error: "This member has not shared contact information." },
-      { status: 403 }
-    );
-  }
+  if (!decision.allowed) return NextResponse.json(
+    { error: "This member has not shared contact information." },
+    { status: 403 }
+  );
 
   const { error: logError } = await supabase.from("contact_info_exposures").insert({
     viewer_user_id: user.id,
@@ -95,9 +88,8 @@ export async function POST(req: Request) {
     contact_method: contactMethod,
   });
 
-  if (logError) {
+  if (logError)
     console.warn("Failed to log contact_info_exposures:", logError.message);
-  }
 
   return NextResponse.json({
     contactMethod,

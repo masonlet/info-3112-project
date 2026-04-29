@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   calculateCompatibilityScore,
   calculateAge,
@@ -47,10 +48,13 @@ export async function GET() {
     );
   }
 
-  let query = supabase
+  const admin = createAdminClient();
+
+  let query = admin
     .from("profiles")
     .select("user_id, first_name, last_name, nickname, gender, date_of_birth, member_type, photo_url, preferred_contact_method, skills, desired_skills, desired_gender, role")
-    .or("member_type.eq.Paid")
+    .eq("member_type", "Paid")
+    .eq("role", "member")
     .neq("user_id", user.id);
 
   if (currentProfile.desired_gender && currentProfile.desired_gender !== "No Preference")
