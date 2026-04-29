@@ -1,10 +1,10 @@
 import "server-only";
-import type { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-export async function getAllUsers(
-  supabase: Awaited<ReturnType<typeof createClient>>
-) {
-  const { data, error } = await supabase
+export async function getAllUsers() {
+  const admin = createAdminClient();
+
+  const { data, error } = await admin
     .from("profiles")
     .select("*")
     .order("created_at", { ascending: false });
@@ -13,25 +13,22 @@ export async function getAllUsers(
   return data ?? [];
 }
 
-export async function getDashboardStats(
-  supabase: Awaited<ReturnType<typeof createClient>>
-) {
+export async function getDashboardStats() {
+  const admin = createAdminClient();
+
   const [
     { count: freeCount }, 
     { count: paidCount }, 
     { count: exposureCount }
   ] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("member_type", "Free"),
-    supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("member_type", "Paid"),
-    supabase
-      .from("contact_info_exposures")
-      .select("*", { count: "exact", head: true }),
+    admin.from("profiles")
+         .select("*", { count: "exact", head: true })
+         .eq("member_type", "Free"),
+    admin.from("profiles")
+         .select("*", { count: "exact", head: true })
+         .eq("member_type", "Paid"),
+    admin.from("contact_info_exposures")
+         .select("*", { count: "exact", head: true }),
   ]);
 
   return {
