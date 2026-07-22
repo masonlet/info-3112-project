@@ -62,7 +62,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-lg border">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
-          <p className="text-sm text-muted-foreground">Welcome back to LookingForLove</p>
+          <p className="text-sm text-muted-foreground">Welcome back to Looking For Love</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="flex flex-col gap-4">

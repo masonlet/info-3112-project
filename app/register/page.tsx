@@ -97,7 +97,7 @@ function RegisterForm() {
       <Card className="w-full max-w-md shadow-lg border">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>
-          <p className="text-sm text-muted-foreground">Join LookingForLove Today</p>
+          <p className="text-sm text-muted-foreground">Join Looking For Love Today</p>
         </CardHeader>
         <CardContent className="space-y-6">
           <form onSubmit={handleRegister} className="flex flex-col gap-4">
