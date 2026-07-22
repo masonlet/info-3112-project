@@ -1,27 +1,15 @@
 # Looking For Love
 
-> **Archived** — this repo preserves the source and project documentation. The site is no longer deployed and all data has been removed.
+A full-stack dating web app for IT professionals: Supabase-authenticated profiles, preference-based match recommendations, a paid tier gating contact-info sharing, and a role-based admin dashboard.
+
+> **Archived**: this repo preserves the source. The site is no longer deployed and all data has been removed.
 
 ![CI](https://img.shields.io/badge/CI-archived-lightgrey)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![Supabase](https://img.shields.io/badge/Supabase-DB%20%2B%20Auth-lightblue)](https://supabase.com)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?logo=vercel)](https://vercel.com)
 [![Vitest](https://img.shields.io/badge/Vitest-Tests-green)](https://vitest.dev)
-
-## Project Overview
-
-This repository contains all code, documentation, and planning materials for Looking For Love.
-Our group will be developing an IT dating website over 8 weeks using Scrum.
-  
-### Looking For Love Coders
-
-| Name                    | Role      |
-| ----------------------- | --------- |
-| Mason L'Etoile          | Developer |
-| Joseph Jaikaran         | Developer |
-| Unish Pandey            | Developer |
-| Ahmed Elmardi O Ibrahim | Developer |
-| Kyan Oberas             | Developer |
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
 
 ## Features
 
@@ -52,19 +40,12 @@ Our group will be developing an IT dating website over 8 weeks using Scrum.
   <img height="35" src="https://img.shields.io/badge/Vercel-%23000?logo=vercel&logoColor=white&style=for-the-badge"/>
 </p>
 
-## Timeline & Evaluation Breakdown
+## Architecture
 
-| Week(s)    | Deliverable               | Weight |
-| ---------- | ------------------------- | ------ |
-| Week 6     | Project Kickoff           | N/A    |
-| Week 7     | Project Planning          | N/A    |
-| Week 8-9   | Sprint 1 - Sprint Plan    | 5%     |
-| Week 8-9   | Sprint 1 - Retrospective  | 5%     |
-| Week 10-11 | Sprint 2 - Sprint Plan    | 5%     |
-| Week 10-11 | Sprint 2 - Retrospective  | 5%     |
-| Week 12-13 | Sprint 3 - Sprint Plan    | 5%     |
-| Week 12-13 | Sprint 3 - Retrospective  | 5%     |
-| Week 14    | Final Product Demo        | 35%    |
+- **Per-user Row-Level Security**: every table (profiles, contact exposures, match feedback) enables RLS with strict per-user policies; data isolation is enforced in the database, not just the app layer.
+- **Tiered access**: paid features are gated server-side; matching and contact-sharing are unavailable to free members.
+- **Ordered SQL migrations**: schema, RLS policies, and grants ship as reviewable, ordered migration files.
+- **Tested**: Vitest unit tests, including system-time mocking to keep date-sensitive logic deterministic.
 
 ## Repo Structure
 ```bash
@@ -86,7 +67,7 @@ Our group will be developing an IT dating website over 8 weeks using Scrum.
 
 ### Prerequisites
 
-- [Node.js 18+](https://nodejs.org)
+- [Node.js 20+](https://nodejs.org)
 - [Supabase Project](https://supabase.com)
 
 ### Workflow
@@ -96,8 +77,8 @@ This repository uses **Branch Protection Rules** to ensure code quality. Direct 
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/masonlet/info-3112-project.git
-cd info-3112-project
+git clone https://github.com/masonlet/looking-for-love.git
+cd looking-for-love
 npm install
 ```
 
