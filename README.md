@@ -1,4 +1,4 @@
-# INFO 3112 Group Project - LookingForLove
+# Looking For Love
 
 > **Archived** — this repo preserves the source and project documentation. The site is no longer deployed and all data has been removed.
 
@@ -10,10 +10,10 @@
 
 ## Project Overview
 
-This repository contains all INFO-3112 group project code, documentation, and planning materials for LookingForLove.
+This repository contains all code, documentation, and planning materials for Looking For Love.
 Our group will be developing an IT dating website over 8 weeks using Scrum.
   
-### LookingForLove Coders
+### Looking For Love Coders
 
 | Name                    | Role      |
 | ----------------------- | --------- |
