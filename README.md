@@ -40,6 +40,13 @@ A full-stack dating web app for IT professionals: Supabase-authenticated profile
   <img height="35" src="https://img.shields.io/badge/Vercel-%23000?logo=vercel&logoColor=white&style=for-the-badge"/>
 </p>
 
+## Architecture
+
+- **Per-user Row-Level Security**: every table (profiles, contact exposures, match feedback) enables RLS with strict per-user policies; data isolation is enforced in the database, not just the app layer.
+- **Tiered access**: paid features are gated server-side; matching and contact-sharing are unavailable to free members.
+- **Ordered SQL migrations**: schema, RLS policies, and grants ship as reviewable, ordered migration files.
+- **Tested**: Vitest unit tests, including system-time mocking to keep date-sensitive logic deterministic.
+
 ## Repo Structure
 ```bash
 ├── .env.example        # Environment Variables
