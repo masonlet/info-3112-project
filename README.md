@@ -96,8 +96,8 @@ This repository uses **Branch Protection Rules** to ensure code quality. Direct 
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/masonlet/info-3112-project.git
-cd info-3112-project
+git clone https://github.com/masonlet/looking-for-love.git
+cd looking-for-love
 npm install
 ```
 
