@@ -86,7 +86,7 @@ Our group will be developing an IT dating website over 8 weeks using Scrum.
 
 ### Prerequisites
 
-- [Node.js 18+](https://nodejs.org)
+- [Node.js 20+](https://nodejs.org)
 - [Supabase Project](https://supabase.com)
 
 ### Workflow
