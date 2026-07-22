@@ -2,7 +2,7 @@
 
 A full-stack dating web app for IT professionals: Supabase-authenticated profiles, preference-based match recommendations, a paid tier gating contact-info sharing, and a role-based admin dashboard.
 
-> **Archived** — this repo preserves the source and project documentation. The site is no longer deployed and all data has been removed.
+> **Archived**: this repo preserves the source. The site is no longer deployed and all data has been removed.
 
 ![CI](https://img.shields.io/badge/CI-archived-lightgrey)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
