@@ -28,7 +28,7 @@ const pmLinks = [
 const Logo = () => (
   <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
     <Heart className="w-5 h-5 text-rose-500" />
-    LookingForLove
+    Looking For Love
   </Link>
 );
 
