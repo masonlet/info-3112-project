@@ -15,8 +15,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Info 3112 Project",
-  description: "Fanshawe group project",
+  title: "Looking For Love",
+  description: "A full-stack dating web app for IT professionals.",
 };
 
 const geistSans = Geist({
