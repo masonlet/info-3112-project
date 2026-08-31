@@ -56,5 +56,8 @@
         "tests/**/*.{test,spec}.{ts,tsx}"
       ]
     }
+  },
+  "allowScripts": {
+    "unrs-resolver": false
   }
 }
