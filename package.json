@@ -50,15 +50,6 @@
     "postcss": "^8.5.10",
     "sharp": "^0.35.0"
   },
-  "vitest": {
-    "test": {
-      "globals": true,
-      "environment": "jsdom",
-      "include": [
-        "tests/**/*.{test,spec}.{ts,tsx}"
-      ]
-    }
-  },
   "allowScripts": {
     "unrs-resolver": false,
     "esbuild": false
