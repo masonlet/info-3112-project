@@ -20,7 +20,10 @@ updates:
       - dependency-name: "@vitest/coverage-v8"
         versions: [">=4"]
       - dependency-name: "eslint"
-        versions: [">=4"]
+        versions: [">=10"]
+      # typescript-eslint rejects TS 7.0
+      - dependency-name: "typescript"
+        versions: [">=7"]
         
 
   - package-ecosystem: "github-actions"
