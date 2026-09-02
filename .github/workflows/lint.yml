@@ -16,7 +16,7 @@ jobs:
         node-version: ['22.0.0', '22', '24', '26']
 
     steps:
-      - uses: masonlet/looking-for-love/.github/actions/setup@main
+      - uses: masonlet/looking-for-love/.github/actions/setup@6a0aedbdfb02aaba713c18cf8d653d294744ede0
         with:
           node-version: ${{ matrix.node-version }}
 
