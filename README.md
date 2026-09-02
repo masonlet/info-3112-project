@@ -2,7 +2,7 @@
 
 A full-stack dating web app for IT professionals: Supabase-authenticated profiles, preference-based match recommendations, a paid tier gating contact-info sharing, and a role-based admin dashboard.
 
-![CI](https://img.shields.io/badge/CI-archived-lightgrey)
+[![CI](https://github.com/masonlet/looking-for-love/actions/workflows/ci.yml/badge.svg)](https://github.com/masonlet/looking-for-love/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![Supabase](https://img.shields.io/badge/Supabase-DB%20%2B%20Auth-lightblue)](https://supabase.com)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?logo=vercel)](https://vercel.com)
