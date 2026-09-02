@@ -67,7 +67,7 @@ A full-stack dating web app for IT professionals: Supabase-authenticated profile
 
 ### Prerequisites
 
-- [Node.js 20+](https://nodejs.org)
+- [Node.js 22+](https://nodejs.org)
 - [Supabase Project](https://supabase.com)
 
 ### Workflow
