@@ -50,7 +50,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }, [supabase]);
 
   useEffect(() => {
-    refresh();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
       refresh();
     });
