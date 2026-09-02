@@ -2,14 +2,8 @@
 
 A full-stack dating web app for IT professionals: Supabase-authenticated profiles, preference-based match recommendations, a paid tier gating contact-info sharing, and a role-based admin dashboard.
 
-> **Archived**: this repo preserves the source. The site is no longer deployed and all data has been removed.
-
-![CI](https://img.shields.io/badge/CI-archived-lightgrey)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
-[![Supabase](https://img.shields.io/badge/Supabase-DB%20%2B%20Auth-lightblue)](https://supabase.com)
-[![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?logo=vercel)](https://vercel.com)
-[![Vitest](https://img.shields.io/badge/Vitest-Tests-green)](https://vitest.dev)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
+[![CI](https://github.com/masonlet/looking-for-love/actions/workflows/ci.yml/badge.svg)](https://github.com/masonlet/looking-for-love/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 
 ## Features
 
@@ -31,13 +25,13 @@ A full-stack dating web app for IT professionals: Supabase-authenticated profile
 ## Tech Stack
 
 <p align="left">
-  <img height="35" src="https://img.shields.io/badge/Next.js-16?logo=next.js&logoColor=white&style=for-the-badge"/>
-  <img height="35" src="https://img.shields.io/badge/Supabase-DB%2BAuth?logo=supabase&logoColor=white&style=for-the-badge"/>
-  <img height="35" src="https://img.shields.io/badge/TypeScript-%23007ACC?logo=typescript&logoColor=white&style=for-the-badge"/>
-  <img height="35" src="https://img.shields.io/badge/Tailwind-%2300C0FF?logo=tailwind&logoColor=white&style=for-the-badge"/>
-  <img height="35" src="https://img.shields.io/badge/Vitest-%23green?logo=vitest&logoColor=white&style=for-the-badge"/>
-  <img height="35" src="https://img.shields.io/badge/shadcn--ui-%23000?logo=shadcn&logoColor=white&style=for-the-badge"/>
-  <img height="35" src="https://img.shields.io/badge/Vercel-%23000?logo=vercel&logoColor=white&style=for-the-badge"/>
+  <img height="35" src="https://img.shields.io/badge/Next.js-%23000000?logo=next.js&logoColor=white&style=for-the-badge"/>
+  <img height="35" src="https://img.shields.io/badge/Supabase-%233FCF8E?logo=supabase&logoColor=white&style=for-the-badge"/>
+  <img height="35" src="https://img.shields.io/badge/TypeScript-%233178C6?logo=typescript&logoColor=white&style=for-the-badge"/>
+  <img height="35" src="https://img.shields.io/badge/Tailwind-%2306B6D4?logo=tailwindcss&logoColor=white&style=for-the-badge"/>
+  <img height="35" src="https://img.shields.io/badge/Vitest-%2300FF74?logo=vitest&logoColor=white&style=for-the-badge"/>
+  <img height="35" src="https://img.shields.io/badge/shadcn--ui-%23000000?logo=shadcn&logoColor=white&style=for-the-badge"/>
+  <img height="35" src="https://img.shields.io/badge/Vercel-%23000000?logo=vercel&logoColor=white&style=for-the-badge"/>
 </p>
 
 ## Architecture
