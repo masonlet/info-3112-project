@@ -12,6 +12,9 @@ updates:
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      # jsdom 30 requires Node ^22.22.2, would like to support 22.0.0+ while its in maintenance LTS
+      - dependency-name: "jsdom"
+        versions: ["30.x"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
