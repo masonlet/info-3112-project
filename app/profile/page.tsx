@@ -105,8 +105,6 @@ export default function ProfilePage() {
   };
 
   const loadProfile = useCallback(async () => {
-    setLoading(true);
-
     const {
       data: { user },
       error: userError,
@@ -160,8 +158,9 @@ export default function ProfilePage() {
   }, [supabase, setFormData]);
 
   useEffect(() => {
-      loadProfile();
-    }, [loadProfile]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- move to a server component
+    loadProfile();
+  }, [loadProfile]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
