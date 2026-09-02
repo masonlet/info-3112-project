@@ -14,7 +14,7 @@ updates:
         update-types: ["version-update:semver-major"]
       # Pinned to keep Node 22.0.0 support
       - dependency-name: "jsdom"
-        versions: [">=27.1.0"]
+        versions: [">=27"]
       - dependency-name: "vitest"
         versions: [">=4"]
       - dependency-name: "@vitest/coverage-v8"
