@@ -1,0 +1,24 @@
+name: Typecheck
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['22.0.0', '22', '24', '26']
+
+    steps:
+      - uses: masonlet/looking-for-love/.github/actions/setup@6a0aedbdfb02aaba713c18cf8d653d294744ede0
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run Typecheck
+        run: npm run typecheck
